@@ -103,7 +103,7 @@ def main(fixture=None):
     else:
         if not token: print("No TELEGRAM_TOKEN"); return
         ups = requests.get(f"https://api.telegram.org/bot{token}/getUpdates",
-                           params={"offset": off["o"] + 1, "timeout": 0}, timeout=30).json().get("result", [])
+                           params={"offset": off["o"] + 1, "timeout": 0}, timeout=10).json().get("result", [])
     for u in ups:
         off["o"] = max(off["o"], u.get("update_id", 0))
         m, cb = u.get("message"), u.get("callback_query")
@@ -116,7 +116,7 @@ def main(fixture=None):
                 msg = callback(cb["data"])
                 if token and not fixture:
                     requests.post(f"https://api.telegram.org/bot{token}/answerCallbackQuery",
-                                  json={"callback_query_id": cb["id"], "text": msg}, timeout=30)
+                                  json={"callback_query_id": cb["id"], "text": msg}, timeout=10)
                 else: print("[CB]", msg)
         except Exception as e:
             tg(f"Error: {e}")
