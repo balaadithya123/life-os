@@ -16,7 +16,7 @@ class _Client:
         h = {"Content-Type": "application/json", "Accept": "application/json, text/event-stream",
              "Authorization": f"Bearer {TOKEN}"}
         if self.sid: h["Mcp-Session-Id"] = self.sid
-        r = requests.post(URL, json=payload, headers=h, timeout=30); r.raise_for_status()
+        r = requests.post(URL, json=payload, headers=h, timeout=5); r.raise_for_status()
         self.sid = r.headers.get("Mcp-Session-Id", self.sid)
         if "text/event-stream" in r.headers.get("Content-Type", ""):
             for line in r.text.splitlines():

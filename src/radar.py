@@ -1,5 +1,5 @@
-"""Daily radar: fetch feeds + watch official pages, rank by what you've liked before, send the top few."""
-import sys, re, time, hashlib
+"""Daily radar: fetch feeds + watch official pages, rank by what you've liked before, send a compact digest."""
+import sys, re, time, hashlib, pathlib
 import feedparser, requests
 from common import *
 import llm
@@ -7,6 +7,7 @@ import llm
 TOK = re.compile(r"[a-z][a-z0-9+#.]{3,}")
 STOP = {"with", "from", "that", "this", "have", "will", "your", "about", "into", "more", "what", "after", "their", "says"}
 TOP_N = 5
+FETCH_TIMEOUT = 5
 
 
 def tokens(t): return {w for w in TOK.findall(t.lower()) if w not in STOP}
@@ -14,14 +15,28 @@ def tokens(t): return {w for w in TOK.findall(t.lower()) if w not in STOP}
 
 def fetch(src, fixture=None):
     if src["kind"] == "rss":
-        feed = feedparser.parse(fixture or src["url"]); out = []
+        if fixture:
+            feed = feedparser.parse(pathlib.Path(fixture).read_bytes())
+        else:
+            response = requests.get(src["url"], timeout=FETCH_TIMEOUT,
+                                    headers={"User-Agent": "life-os/1.0"})
+            response.raise_for_status()
+            feed = feedparser.parse(response.content)
+        out = []
         for e in feed.entries[:30]:
             ts = e.get("published_parsed")
             if ts and not fixture and time.time() - time.mktime(ts) > 3 * 86400: continue
-            out.append({"title": e.title, "link": e.link, "src": src["name"], "page": False})
+            out.append({"title": e.get("title", "(untitled)"),
+                        "link": e.get("link", src.get("url", "")),
+                        "src": src["name"], "page": False})
         return out
     if src["kind"] == "page":   # official pages: alert when visible text changes
-        html = requests.get(src["url"], timeout=30, headers={"User-Agent": "life-os/1.0"}).text
+        # Fixture mode is deliberately offline; page checks are skipped rather than making live requests.
+        if fixture: return []
+        response = requests.get(src["url"], timeout=FETCH_TIMEOUT,
+                                headers={"User-Agent": "life-os/1.0"})
+        response.raise_for_status()
+        html = response.text
         text = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", html))
         h, seen = hashlib.md5(text.encode()).hexdigest(), load("pages.json", {})
         changed = src["name"] in seen and seen[src["name"]] != h
@@ -46,21 +61,34 @@ def main(fixture=None):
                 if it["id"] in seen or any(x["id"] == it["id"] for x in pool): continue
                 it["score"] = score(it, src, p, conf.get("keywords", {})); pool.append(it)
         except Exception as e:
-            print(f"[radar] {src['name']} failed: {e}")
+            print(f"[radar] {src['name']} failed: {type(e).__name__}: {str(e)[:160]}")
     top = [i for i in sorted(pool, key=lambda i: -i["score"]) if i["score"] > 0.5][:TOP_N]
-    if not top: tg("Radar: nothing new worth your time today."); return
+    if not top:
+        tg("Radar: nothing new worth your time today.")
+        return
     why = {}
     ans = llm.ask("radar", "For each numbered headline, write ONE line (max 15 words) on why it matters to a JEE Advanced "
                   "aspirant who builds web apps and a bus-fleet startup. Format '1. text'.\n" +
-                  "\n".join(f"{n}. {i['title']}" for n, i in enumerate(top, 1)))
+                  "\n".join(f"{n}. {i['title'][:160]}" for n, i in enumerate(top, 1)))
     for line in (ans or "").splitlines():
         m = re.match(r"\s*(\d+)[.)]\s*(.+)", line)
-        if m: why[int(m.group(1))] = m.group(2)
+        if m: why[int(m.group(1))] = m.group(2).strip()[:120]
+
+    blocks, buttons = [], []
     for n, it in enumerate(top, 1):
+        title = str(it["title"]).strip()[:160]
+        link = str(it["link"]).strip()[:250]
+        explanation = why.get(n, "")
+        block = f"{n}. {title}"
+        if explanation: block += f"\n{explanation}"
+        if link: block += f"\n{link}"
+        blocks.append(block)
+        buttons.append([("👍", f"r|u|{it['id']}"), ("👎", f"r|d|{it['id']}")])
         meta[it["id"]] = {"title": it["title"], "src": it["src"], "tokens": sorted(tokens(it["title"]))}
         seen.add(it["id"])
-        tg(f"{it['title']}\n{why.get(n, '')}\n{it['link']}".strip(),
-           [[("👍", f"r|u|{it['id']}"), ("👎", f"r|d|{it['id']}")]])
+
+    # One digest reduces Telegram API calls and keeps related headlines together.
+    tg("LIFEOS RADAR · TOP PICKS\n\n" + "\n\n".join(blocks), buttons)
     save("seen.json", list(seen)[-2000:]); save("radar_items.json", dict(list(meta.items())[-300:]))
 
 
