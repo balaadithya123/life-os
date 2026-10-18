@@ -3,7 +3,7 @@ import os, sys, json, requests
 from common import *
 import learn, study, snapshot
 
-HELP = """LifeOS daily revision (follows active cycle in plan.yml – currently Cycle 5)
+HELP = """LifeOS daily revision (follows the active schedule in config/plan.yml)
 
 /today - today's picks (max 3 topics)
 /done [1 3] - mark tasks done (all if no numbers)
@@ -33,8 +33,15 @@ def handle(text):
         return "Logged.\n" + fmt_today(study.mark_done(idx or None))
     if cmd == "/test":
         a = arg.split()
-        try: scores = [float(x) for x in a[-3:]]; name = " ".join(a[:-3]) or "test"
-        except ValueError: return "Format: /test NAME phy chem math"
+        if len(a) < 4:
+            return "Format: /test NAME phy chem math — provide a test name and three scores."
+        try:
+            scores = [float(x) for x in a[-3:]]
+        except ValueError:
+            return "Format: /test NAME phy chem math — the final three values must be scores."
+        name = " ".join(a[:-3]) or "test"
+        if any(score < 0 for score in scores):
+            return "Scores cannot be negative."
         append("tests.jsonl", {"d": today().isoformat(), "name": name, "scores": scores})
         return f"Logged {name}: P {scores[0]:g} C {scores[1]:g} M {scores[2]:g}. Now /mistake chapter kind n for what cost you marks."
     if cmd == "/mistake":
@@ -102,7 +109,7 @@ def main(fixture=None):
         m, cb = u.get("message"), u.get("callback_query")
         chat_obj = (m or (cb or {}).get("message") or {}).get("chat", {})
         cid = str(chat_obj.get("id", ""))
-        if not fixture and cid != chat: continue            # ignore strangers
+        if not fixture and cid != chat: continue
         try:
             if m and m.get("text", "").startswith("/"): tg(handle(m["text"]))
             elif cb:
