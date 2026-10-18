@@ -3,13 +3,17 @@ import os, sys, json, requests
 from common import *
 import learn, study, snapshot
 
-HELP = """/today - today's picks
+HELP = """LifeOS daily revision (follows active cycle in plan.yml – currently Cycle 5)
+
+/today - today's picks (max 3 topics)
 /done [1 3] - mark tasks done (all if no numbers)
 /test NAME phy chem math - log a test, e.g. /test QPT3 62 48 80
 /mistake optics concept 2 - kinds: concept, silly, time
 /ok optics - practiced it and felt solid
 /addchapter p: Wave Optics - prefix p: c: m:
-/status - your weakest chapters and learned profile"""
+/status - your weakest chapters and learned profile
+
+Morning brief arrives ~07:00 IST with today's topics."""
 
 
 def fmt_today(t):
