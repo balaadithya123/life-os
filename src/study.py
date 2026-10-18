@@ -14,8 +14,7 @@ def _daily_chapters(ch):
         return [], None
     keys = []
     for name in items:
-        if name.lower().startswith("test day"):
-            continue  # test days handled in brief
+        # Keep everything, including unit-test subjects
         subj, _, n = name.partition(": ")
         if subj and n:
             keys.append(learn.add_chapter(ch, subj, n))
@@ -41,9 +40,9 @@ def n_tasks():
     return max(2, min(MAX_TOPICS, round(MAX_TOPICS * load_f)))
 
 
-def pick():
+def pick(force=False):
     t = load("today.json", {})
-    if t.get("date") == today().isoformat():
+    if not force and t.get("date") == today().isoformat():
         return t
     ch = learn.chapters()
 
