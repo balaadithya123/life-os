@@ -1,0 +1,9 @@
+# Reconstructed after an accidental overwrite: please check against your Revision Hub.
+# A cycle only drives the daily picks when BOTH start and end are filled (real dates, no quotes).
+cycles:
+  - {name: "Cycle 2", start: null, end: null, chapters: ["Physics: KTG & Thermal", "Physics: Thermodynamics", "Chemistry: GOC", "Chemistry: Hydrocarbons"]}
+  - {name: "Cycle 3", start: null, end: null, chapters: ["Physics: Magnetic Effects & Matter", "Chemistry: Haloalkanes", "Chemistry: Aldehydes & Ketones"]}
+  - {name: "Cycle 4", start: null, end: null, chapters: ["Physics: Optics (Wave & Ray)", "Chemistry: Alcohols, Phenols & Ethers", "Maths: Probability"]}
+  - {name: "Cycle 5", start: null, end: null, chapters: ["Chemistry: p-Block"]}
+  - {name: "Cycle 6", start: null, end: null, chapters: ["Chemistry: Practical Chemistry"]}
+  - {name: "Cycle 7", start: 2026-12-25, end: 2027-01-02, chapters: []}

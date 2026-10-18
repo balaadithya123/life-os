@@ -1,0 +1,5 @@
+# From what you told me; correct or extend.
+tests:
+  - {name: "QPT 1", date: 2026-11-08}
+  - {name: "QPT 6", date: 2026-11-28}
+  - {name: "QPT 10", date: 2026-12-12}

@@ -1,0 +1,11 @@
+# Seeded from the weak chapters you told me per cycle. Names are free text: fix them to match your coaching list.
+# New chapters appear automatically when you log a mistake with a prefix (/mistake p:optics concept) or /addchapter.
+Physics:
+  weak: ["KTG & Thermal", "Thermodynamics", "Magnetic Effects & Matter", "Optics (Wave & Ray)"]
+  other: []
+Chemistry:
+  weak: ["GOC", "Hydrocarbons", "Haloalkanes", "Alcohols, Phenols & Ethers", "Aldehydes & Ketones", "p-Block", "Practical Chemistry"]
+  other: []
+Maths:
+  weak: ["Probability"]
+  other: []

@@ -1,0 +1,9 @@
+# Reconstructed after an accidental overwrite. kind: rss | page. Dead feeds are skipped, never fatal.
+# Keywords must be 4+ letters (the tokenizer ignores shorter words).
+keywords: {advanced: 1.5, notice: 1.0, schedule: 0.8, registration: 1.0, vercel: 1.0, supabase: 1.0, gemini: 0.7, claude: 0.7, startup: 0.5, react: 0.4}
+sources:
+  - {name: "JEE Advanced", kind: page, url: "https://jeeadv.ac.in/"}
+  - {name: "JEE Main (NTA)", kind: page, url: "https://jeemain.nta.nic.in/"}
+  - {name: "Vercel", kind: rss, url: "https://vercel.com/atom", weight: 1.0}
+  - {name: "Supabase", kind: rss, url: "https://supabase.com/rss.xml", weight: 1.0}
+  - {name: "GitHub", kind: rss, url: "https://github.blog/feed/", weight: 0.6}
