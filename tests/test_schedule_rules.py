@@ -37,7 +37,7 @@ class JEECalendarTests(unittest.TestCase):
         ):
             self.assertNotIn(removed_date, qpt_dates)
 
-    def test_diwwali_pair_and_full_mock_phase_are_present(self):
+    def test_diwali_pair_and_full_mock_phase_are_present(self):
         qpts = {item["name"]: item for item in CALENDAR if item.get("kind") == "qpt"}
         self.assertEqual(qpts["QPT 4"]["date"], dt.date(2026, 11, 7))
         self.assertEqual(qpts["QPT 1"]["date"], dt.date(2026, 11, 8))
