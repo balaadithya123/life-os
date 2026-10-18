@@ -1,10 +1,9 @@
 # life-os snapshot (auto-generated, do not edit)
-Updated: 2026-10-18 18:29 IST
+Updated: 2026-10-18 18:32 IST
 
-Today (Cycle 5):
-1. [ ] Chemistry: Practical Chemistry
-2. [ ] Physics: Optics (Wave & Ray)
-3. [ ] Maths: Probability
+Today (Daily 2026-10-18):
+1. [ ] Chemistry: Thermochemistry
+2. [ ] Physics: NLM
 
 Weakest chapters (0 = strong, 1 = weak):
 - Physics: KTG & Thermal: 0.7 (review every ~3d, 0 mistakes logged)
