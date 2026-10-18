@@ -12,7 +12,7 @@ jobs:
       - uses: actions/setup-python@v5
         with: {python-version: "3.11", cache: pip}
       - run: pip install -r requirements.txt
-      - run: python src/selfcheck.py
+      - name: test Telegram delivery helpers\n        run: python -m unittest discover -s tests -p 'test_telegram_delivery.py' -v\n      - run: python src/selfcheck.py
         env:
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
