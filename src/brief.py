@@ -21,16 +21,30 @@ def main():
     miss = study.close_yesterday()
     t, p, ch = study.pick(), profile(), learn.chapters()
     parts = [f"Good morning. {today().strftime('%a %d %b')}"]
+
+    # Clear cycle indicator (especially for v5 / Cycle 5)
+    if t.get("cycle"):
+        parts.append(f"Active schedule: {t['cycle']}")
+    else:
+        parts.append("No active cycle dates set – using weakness + spaced repetition")
+
     nxt = sorted((x for x in (cfg("tests.yml", {}) or {}).get("tests", []) if x["date"] >= today()), key=lambda x: x["date"])
     if nxt: parts.append(f"Next: {nxt[0]['name']} in {(nxt[0]['date'] - today()).days} days")
     if miss is not None and miss < 1: parts.append(f"Yesterday: {round(miss * 100)}% of tasks done")
+
     parts.append(fmt_today(t))
+
     if p["hours"]:
-        best = max(p["hours"], key=p["hours"].get); parts.append(f"You finish most tasks around {best}:00. Put the hardest one there.")
+        best = max(p["hours"], key=p["hours"].get)
+        parts.append(f"You finish most tasks around {best}:00. Put the hardest one there.")
+
     n = nudge(p, ch)
     if n: parts.append(n)
+
     hand = hub.my_handoffs()
     if isinstance(hand, list) and hand: parts.append(f"Hub: {len(hand)} task(s) waiting for life-os")
+
+    parts.append("Reply /done 1 2 or /mistake chapter kind to log progress.")
     tg("\n\n".join(parts))
     snapshot.write()
 
