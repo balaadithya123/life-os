@@ -1,7 +1,30 @@
 # JEE Plan v5 (13 Oct 2026 – 20 Jan 2027)
 # Source: JEE_Plan_v5.pdf
-# A cycle drives daily picks only when BOTH start and end are filled.
+# Full schedule: coaching tests + your chapters + QPTs. Not revision-only.
 
+# Daily "Your chapter" map (highest priority when present)
+daily:
+  "2026-10-13": ["Physics: Kinematics"]
+  "2026-10-14": ["Chemistry: Thermochemistry"]
+  "2026-10-15": ["Physics: NLM & Friction"]
+  "2026-10-16": ["Chemistry: Thermochemistry"]
+  "2026-10-17": ["Physics: NLM & Friction"]
+  "2026-10-18": ["Test day: Thermochemistry, NLM"]
+  "2026-10-19": ["Physics: Work-Energy-Power"]
+  "2026-10-20": ["Chemistry: Chemical Equilibrium"]
+  "2026-10-21": ["Physics: COM & Collisions"]
+  "2026-10-22": ["Chemistry: Chemical Equilibrium"]
+  "2026-10-23": ["Physics: COM & Collisions"]
+  "2026-10-24": ["Chemistry: Ionic Equilibrium"]
+  "2026-10-25": ["Test day: Chemical Equilibrium, WPE"]
+  "2026-10-26": ["Physics: COM & Collisions"]
+  "2026-10-27": ["Chemistry: Ionic Equilibrium"]
+  "2026-10-28": ["Physics: Rotation"]
+  "2026-10-29": ["Physics: Gravitation"]
+  "2026-10-30": ["Chemistry: Mole Concept & Redox", "Physics: Kinematics 1D"]
+  "2026-10-31": ["Chemistry: Atomic Structure", "Maths: Complex Numbers I"]
+
+# Cycles (used when no exact daily entry)
 cycles:
   - name: "Cycle 2"
     start: 2026-11-11
