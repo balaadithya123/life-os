@@ -1,10 +1,9 @@
 {
  "date": "2026-10-18",
- "cycle": "Cycle 5",
+ "cycle": "Daily 2026-10-18",
  "picks": [
-  "Chemistry: Practical Chemistry",
-  "Physics: Optics (Wave & Ray)",
-  "Maths: Probability"
+  "Chemistry: Thermochemistry",
+  "Physics: NLM"
  ],
  "done": []
 }
