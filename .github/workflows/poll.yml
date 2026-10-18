@@ -1,8 +1,9 @@
 name: telegram-poll
 on:
   schedule:
-    # Every 15 minutes from 06:00 to 23:45 IST (00:30–18:15 UTC)
-    - cron: "0,15,30,45 0-18 * * *"
+    # Every 5 minutes from 06:00 to 23:55 IST (00:30–18:25 UTC)
+    # Note: <5 min is not practical on free GitHub Actions (minute quota burns too fast)
+    - cron: "*/5 0-18 * * *"
   workflow_dispatch:
 permissions: {contents: write}
 concurrency: {group: life-os-state, cancel-in-progress: false}
