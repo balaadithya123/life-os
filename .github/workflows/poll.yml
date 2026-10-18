@@ -1,6 +1,8 @@
 name: telegram-poll
 on:
-  schedule: [{cron: "30 0-17 * * *"}]   # hourly, 06:00-23:00 IST (keeps free minutes low)
+  schedule:
+    # Every 15 minutes from 06:00 to 23:45 IST (00:30–18:15 UTC)
+    - cron: "0,15,30,45 0-18 * * *"
   workflow_dispatch:
 permissions: {contents: write}
 concurrency: {group: life-os-state, cancel-in-progress: false}
