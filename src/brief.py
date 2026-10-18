@@ -22,29 +22,40 @@ def main():
     t, p, ch = study.pick(), profile(), learn.chapters()
     parts = [f"Good morning. {today().strftime('%a %d %b')}"]
 
-    # Clear cycle indicator (especially for v5 / Cycle 5)
     if t.get("cycle"):
-        parts.append(f"Active schedule: {t['cycle']}")
+        parts.append(f"Active: {t['cycle']}")
     else:
-        parts.append("No active cycle dates set – using weakness + spaced repetition")
+        parts.append("Using weakness + spaced repetition")
+
+    # Flag test days from daily map
+    day_items = (cfg("plan.yml", {}) or {}).get("daily", {}).get(today().isoformat()) or []
+    for item in day_items:
+        if "test day" in item.lower() or "unit tests" in item.lower():
+            parts.append(f"⚠️ {item}")
 
     nxt = sorted((x for x in (cfg("tests.yml", {}) or {}).get("tests", []) if x["date"] >= today()), key=lambda x: x["date"])
-    if nxt: parts.append(f"Next: {nxt[0]['name']} in {(nxt[0]['date'] - today()).days} days")
-    if miss is not None and miss < 1: parts.append(f"Yesterday: {round(miss * 100)}% of tasks done")
+    if nxt:
+        note = nxt[0].get("note", "")
+        parts.append(f"Next QPT: {nxt[0]['name']} in {(nxt[0]['date'] - today()).days} days" + (f" ({note})" if note else ""))
+
+    if miss is not None and miss < 1:
+        parts.append(f"Yesterday: {round(miss * 100)}% done")
 
     parts.append(fmt_today(t))
 
     if p["hours"]:
         best = max(p["hours"], key=p["hours"].get)
-        parts.append(f"You finish most tasks around {best}:00. Put the hardest one there.")
+        parts.append(f"You finish most tasks around {best}:00.")
 
     n = nudge(p, ch)
-    if n: parts.append(n)
+    if n:
+        parts.append(n)
 
     hand = hub.my_handoffs()
-    if isinstance(hand, list) and hand: parts.append(f"Hub: {len(hand)} task(s) waiting for life-os")
+    if isinstance(hand, list) and hand:
+        parts.append(f"Hub: {len(hand)} task(s) waiting")
 
-    parts.append("Reply /done 1 2 or /mistake chapter kind to log progress.")
+    parts.append("Reply /done 1 2 or /mistake chapter kind")
     tg("\n\n".join(parts))
     snapshot.write()
 
