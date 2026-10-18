@@ -27,16 +27,27 @@ def main():
     else:
         parts.append("Using weakness + spaced repetition")
 
-    # Flag test days from daily map
-    day_items = (cfg("plan.yml", {}) or {}).get("daily", {}).get(today().isoformat()) or []
-    for item in day_items:
-        if "test day" in item.lower() or "unit tests" in item.lower():
-            parts.append(f"⚠️ {item}")
-
-    nxt = sorted((x for x in (cfg("tests.yml", {}) or {}).get("tests", []) if x["date"] >= today()), key=lambda x: x["date"])
-    if nxt:
-        note = nxt[0].get("note", "")
-        parts.append(f"Next QPT: {nxt[0]['name']} in {(nxt[0]['date'] - today()).days} days" + (f" ({note})" if note else ""))
+    # Daily chapter labels do not encode test-day metadata; keep schedule messaging
+    # driven by the ordered tests.yml data rather than parsing chapter names.
+    tests = sorted((x for x in (cfg("tests.yml", {}) or {}).get("tests", [])
+                    if x.get("date") is not None),
+                   key=lambda x: x["date"])
+    today_tests = [x for x in tests if x["date"] == today()]
+    if today_tests:
+        parts.append("TODAY'S SCHEDULED TEST" + ("S" if len(today_tests) > 1 else "") + ":")
+        for x in today_tests:
+            note = x.get("note", "")
+            parts.append(f"- {x['name']}" + (f" — {note}" if note else ""))
+    upcoming = [x for x in tests if x["date"] > today()][:3]
+    if upcoming:
+        parts.append("Upcoming tests (chronological):")
+        for x in upcoming:
+            days = (x["date"] - today()).days
+            note = x.get("note", "")
+            parts.append(f"- {x['date'].strftime('%d %b')}: {x['name']} ({days}d)" +
+                         (f" — {note}" if note else ""))
+    elif not today_tests:
+        parts.append("No upcoming tests are listed in config/tests.yml.")
 
     if miss is not None and miss < 1:
         parts.append(f"Yesterday: {round(miss * 100)}% done")
