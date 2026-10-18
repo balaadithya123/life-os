@@ -1,14 +1,48 @@
-# JEE Plan v5 – Your 12 QPTs
+# Correlated V5 calendar: selected QPTs + major coaching cycle-end, AITS and full-mock dates.
+# QPT policy: 7 effective QPTs; no QPT on AITS Main Sundays; Cycle 7 has one QPT.
 tests:
-  - {name: "QPT 8", date: 2026-11-01, note: "Tentative. Gravitation taught 24 Nov"}
-  - {name: "QPT 4", date: 2026-11-07, note: "Diwali holiday"}
-  - {name: "QPT 1", date: 2026-11-08, note: "Tentative. Diwali"}
-  - {name: "QPT 3", date: 2026-11-22, note: "Tentative. Physics taught 10-14 Dec"}
-  - {name: "QPT 6", date: 2026-11-28, note: "17:00-20:00"}
-  - {name: "QPT 10", date: 2026-12-12, note: "17:00-20:00"}
-  - {name: "QPT 5", date: 2026-12-25, note: "Christmas holiday"}
-  - {name: "QPT 7", date: 2026-12-26, note: "17:00-20:00"}
-  - {name: "QPT 13", date: 2026-12-28, note: "All Class 11 – 17:00-20:00"}
-  - {name: "QPT 9", date: 2026-12-30, note: "17:00-20:00"}
-  - {name: "QPT 12", date: 2026-12-31, note: "All Class 12 – Full day"}
-  - {name: "QPT 11", date: 2027-01-01, note: "New Year holiday"}
+  - {name: "Cycle-End 1 — JEE Advanced (T06A)", date: 2026-11-05, kind: cycle-end-advanced, note: "3 hours · afternoon"}
+  - {name: "QPT 4", date: 2026-11-07, kind: qpt, note: "Diwali target 1 of 2 · 17:00–20:00"}
+  - {name: "QPT 1", date: 2026-11-08, kind: qpt, note: "Diwali target 2 of 2 · 17:00–20:00"}
+  - {name: "Cycle-End 1 — JEE Mains (T07)", date: 2026-11-10, kind: cycle-end-main, note: "3 hours · morning"}
+  - {name: "AITS Part Test 1 — JEE Main", date: 2026-11-14, kind: aits-main, note: "09:00–12:00"}
+  - {name: "AITS Part Test 1 — JEE Advanced", date: 2026-11-15, kind: aits-advanced, note: "Paper analysis and error-log review"}
+  - {name: "Cycle-End 2 — JEE Advanced (T14A)", date: 2026-11-19, kind: cycle-end-advanced, note: "3 hours · afternoon"}
+  - {name: "Cycle-End 2 — JEE Mains (T15)", date: 2026-11-20, kind: cycle-end-main, note: "3 hours · morning"}
+  - {name: "QPT 8", date: 2026-11-25, kind: qpt, note: "Moved after Gravitation is taught on 24 Nov · 17:00–20:00"}
+  - {name: "Cycle-End 3 — JEE Advanced (T21A)", date: 2026-11-27, kind: cycle-end-advanced, note: "3 hours · afternoon"}
+  - {name: "Cycle-End 3 — JEE Mains (T22)", date: 2026-11-28, kind: cycle-end-main, note: "3 hours · morning"}
+  - {name: "AITS Full Test 1 — JEE Main", date: 2026-11-29, kind: aits-main, note: "09:00–12:00 · no QPT scheduled"}
+  - {name: "QPT 6", date: 2026-11-30, kind: qpt, note: "Moved after AITS Full Test 1 · 17:00–20:00"}
+  - {name: "AITS Part Test 2 — JEE Main", date: 2026-12-05, kind: aits-main, note: "15:00–18:00"}
+  - {name: "AITS Part Test 2 — JEE Advanced", date: 2026-12-06, kind: aits-advanced, note: "Paper analysis and error-log review"}
+  - {name: "Cycle-End 4 — JEE Advanced (T29A)", date: 2026-12-08, kind: cycle-end-advanced, note: "3 hours · afternoon"}
+  - {name: "Cycle-End 4 — JEE Mains (T30)", date: 2026-12-09, kind: cycle-end-main, note: "3 hours · morning"}
+  - {name: "QPT 10", date: 2026-12-10, kind: qpt, note: "Moved off 12 Dec to avoid the AITS Main weekend · 17:00–20:00"}
+  - {name: "AITS Full Test 2 — JEE Main", date: 2026-12-13, kind: aits-main, note: "09:00–12:00 · no QPT scheduled"}
+  - {name: "Cycle-End 5 — JEE Advanced (T36A)", date: 2026-12-16, kind: cycle-end-advanced, note: "3 hours · afternoon"}
+  - {name: "Cycle-End 5 — JEE Mains (T37)", date: 2026-12-17, kind: cycle-end-main, note: "3 hours · morning"}
+  - {name: "AITS Part Test 3 — JEE Main", date: 2026-12-19, kind: aits-main, note: "15:00–18:00"}
+  - {name: "AITS Part Test 3 — JEE Advanced", date: 2026-12-20, kind: aits-advanced, note: "Paper analysis and error-log review"}
+  - {name: "QPT 3", date: 2026-12-21, kind: qpt, note: "Moved after the listed Physics teaching window (10–14 Dec) and AITS weekend · 17:00–20:00"}
+  - {name: "Cycle-End 6 — JEE Advanced (T41A)", date: 2026-12-23, kind: cycle-end-advanced, note: "3 hours · afternoon"}
+  - {name: "Cycle-End 6 — JEE Mains (T42)", date: 2026-12-24, kind: cycle-end-main, note: "3 hours · morning"}
+  - {name: "AITS Full Test 3 — JEE Main", date: 2026-12-27, kind: aits-main, note: "09:00–12:00 · no QPT scheduled"}
+  - {name: "QPT 13 — Cycle 7 QPT", date: 2026-12-28, kind: qpt, cycle: 7, note: "All Class 11 · 17:00–20:00 · only QPT in Cycle 7"}
+  - {name: "Cycle-End 7 — JEE Mains (T48)", date: 2027-01-02, kind: cycle-end-main, note: "3 hours · morning"}
+  - {name: "Cycle-End 7 — JEE Advanced (T48A)", date: 2027-01-02, kind: cycle-end-advanced, note: "3 hours · afternoon"}
+  - {name: "Full JEE Mains Mock 1 (T49)", date: 2027-01-04, kind: full-mock, note: "3 hours · paper analysis and error-log review"}
+  - {name: "Full JEE Mains Mock 2 (T50)", date: 2027-01-05, kind: full-mock, note: "3 hours · paper analysis and error-log review"}
+  - {name: "Full JEE Mains Mock 3 (T51)", date: 2027-01-06, kind: full-mock, note: "3 hours · paper analysis and error-log review"}
+  - {name: "Full JEE Mains Mock 4 (T52)", date: 2027-01-07, kind: full-mock, note: "3 hours · paper analysis and error-log review"}
+  - {name: "Full JEE Mains Mock 5 (T53)", date: 2027-01-08, kind: full-mock, note: "3 hours · paper analysis and error-log review"}
+  - {name: "Full JEE Mains Mock 6 (T54)", date: 2027-01-09, kind: full-mock, note: "3 hours · paper analysis and error-log review"}
+  - {name: "Full JEE Mains Mock 7 (T55)", date: 2027-01-11, kind: full-mock, note: "3 hours · paper analysis and error-log review"}
+  - {name: "Full JEE Mains Mock 8 (T56)", date: 2027-01-12, kind: full-mock, note: "3 hours · paper analysis and error-log review"}
+  - {name: "Full JEE Mains Mock 9 (T57)", date: 2027-01-13, kind: full-mock, note: "3 hours · paper analysis and error-log review"}
+  - {name: "Full JEE Mains Mock 10 (T58)", date: 2027-01-14, kind: full-mock, note: "3 hours · paper analysis and error-log review"}
+  - {name: "Full JEE Mains Mock 11 (T59)", date: 2027-01-15, kind: full-mock, note: "3 hours · paper analysis and error-log review"}
+  - {name: "Full JEE Mains Mock 12 (T60)", date: 2027-01-16, kind: full-mock, note: "3 hours · paper analysis and error-log review"}
+  - {name: "Full JEE Mains Mock 13 (T61)", date: 2027-01-18, kind: full-mock, note: "3 hours · paper analysis and error-log review"}
+  - {name: "Full JEE Mains Mock 14 (T62)", date: 2027-01-19, kind: full-mock, note: "3 hours · paper analysis and error-log review"}
+  - {name: "Full JEE Mains Mock 15 (T63)", date: 2027-01-20, kind: full-mock, note: "3 hours · paper analysis and error-log review"}
