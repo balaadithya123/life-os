@@ -1,5 +1,5 @@
 """Daily radar: fetch feeds + watch official pages, rank by what you've liked before, send a compact digest."""
-import sys, re, time, hashlib
+import sys, re, time, hashlib, pathlib
 import feedparser, requests
 from common import *
 import llm
@@ -16,7 +16,7 @@ def tokens(t): return {w for w in TOK.findall(t.lower()) if w not in STOP}
 def fetch(src, fixture=None):
     if src["kind"] == "rss":
         if fixture:
-            feed = feedparser.parse(fixture)
+            feed = feedparser.parse(pathlib.Path(fixture).read_bytes())
         else:
             response = requests.get(src["url"], timeout=FETCH_TIMEOUT,
                                     headers={"User-Agent": "life-os/1.0"})
