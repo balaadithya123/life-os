@@ -1,0 +1,7 @@
+{
+  "repos/balaadithya123/App_1": {"default_branch":"main"},
+  "repos/balaadithya123/App_1/commits/main": {"sha":"fixture-head-sha"},
+  "repos/balaadithya123/App_1/actions/runs?per_page=100": {"workflow_runs":[{"name":"CI","run_number":18,"created_at":"2026-10-18T10:00:00Z","conclusion":"failure"}]},
+  "repos/balaadithya123/App_1/commits/fixture-head-sha/status": {"state":"failure","statuses":[{"context":"Vercel","state":"error"}]},
+  "repos/balaadithya123/App_1/pulls?state=open&per_page=100": [{"number":32,"title":"Materials & Suppliers v2","created_at":"2026-10-08T10:00:00Z"}]
+}
