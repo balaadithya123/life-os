@@ -24,3 +24,5 @@ jobs:
           XAI_API_KEY: ${{ secrets.XAI_API_KEY }}
           HUB_URL: ${{ secrets.HUB_URL }}
           HUB_TOKEN: ${{ secrets.HUB_TOKEN }}
+          # Keep push-triggered checks silent; manual workflow_dispatch may notify Telegram.
+          DRY_RUN: ${{ github.event_name != 'workflow_dispatch' && '1' || '0' }}
