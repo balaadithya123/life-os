@@ -1,11 +1,47 @@
-# LifeOS revision plan – v5 focused
-# A cycle only drives the daily picks when BOTH start and end are filled (real dates, no quotes).
-# Current active focus: Cycle 5 starting today.
+# JEE Plan v5 (13 Oct 2026 – 20 Jan 2027)
+# Source: JEE_Plan_v5.pdf
+# A cycle drives daily picks only when BOTH start and end are filled.
 
 cycles:
-  - {name: "Cycle 2", start: null, end: null, chapters: ["Physics: KTG & Thermal", "Physics: Thermodynamics", "Chemistry: GOC", "Chemistry: Hydrocarbons"]}
-  - {name: "Cycle 3", start: null, end: null, chapters: ["Physics: Magnetic Effects & Matter", "Chemistry: Haloalkanes", "Chemistry: Aldehydes & Ketones"]}
-  - {name: "Cycle 4", start: null, end: null, chapters: ["Physics: Optics (Wave & Ray)", "Chemistry: Alcohols, Phenols & Ethers", "Maths: Probability"]}
-  - {name: "Cycle 5", start: 2026-10-18, end: 2026-11-15, chapters: ["Chemistry: p-Block"]}
-  - {name: "Cycle 6", start: null, end: null, chapters: ["Chemistry: Practical Chemistry"]}
-  - {name: "Cycle 7", start: 2026-12-25, end: 2027-01-02, chapters: []}
+  - name: "Cycle 2"
+    start: 2026-11-11
+    end: 2026-11-20
+    chapters:
+      - "Physics: KTG & Thermal"
+      - "Physics: Thermodynamics"
+      - "Chemistry: GOC"
+      - "Chemistry: Hydrocarbons"
+
+  - name: "Cycle 3"
+    start: 2026-11-21
+    end: 2026-11-28
+    chapters:
+      - "Physics: Magnetic Effects & Matter"
+      - "Chemistry: Haloalkanes"
+      - "Chemistry: Alcohols, Phenols & Ethers"
+      - "Chemistry: Aldehydes & Ketones"
+
+  - name: "Cycle 4"
+    start: 2026-11-29
+    end: 2026-12-09
+    chapters:
+      - "Physics: Optics (Wave & Ray)"
+      - "Chemistry: Alcohols, Phenols & Ethers"
+      - "Maths: Probability"
+
+  - name: "Cycle 5"
+    start: 2026-12-10
+    end: 2026-12-17
+    chapters:
+      - "Chemistry: p-Block"
+
+  - name: "Cycle 6"
+    start: 2026-12-18
+    end: 2026-12-24
+    chapters:
+      - "Chemistry: Practical Chemistry"
+
+  - name: "Cycle 7"
+    start: 2026-12-25
+    end: 2027-01-03
+    chapters: []   # full tests only
