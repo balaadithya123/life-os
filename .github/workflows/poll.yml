@@ -1,11 +1,5 @@
 name: telegram-poll
 on:
-  schedule:
-    # Every 5 minutes from 06:00 to 23:55 IST (00:30–18:25 UTC).
-    # Split into three windows so GitHub cron does not run outside the intended hours.
-    - cron: "30-59/5 0 * * *"
-    - cron: "*/5 1-17 * * *"
-    - cron: "0-25/5 18 * * *"
   workflow_dispatch:
 permissions: {contents: write}
 concurrency: {group: life-os-state, cancel-in-progress: false}
