@@ -22,7 +22,7 @@ def main():
     L.append("AI keys: " + (", ".join(on) if on else "none yet (radar and nudges use plain fallbacks; add GEMINI_API_KEY, it is free)"))
     L.append(f"Cycles with dates: {dated} of {len(cyc)}" + ("" if dated else " (fill start/end in config/plan.yml to make picks follow your cycle)"))
     L.append("Hub link from GitHub: " + ("on" if os.getenv("HUB_URL") and os.getenv("HUB_TOKEN") else "off (fine: AIs read state/hub_snapshot.md instead)"))
-    L.append("Automatic schedule: brief 07:00 IST; Telegram commands checked every 5 min from 06:00–23:55 IST; weekly pass Sun 07:30. Nothing to run by hand.")
+    L.append("Automatic schedule: Cloudflare Worker sends morning brief 07:00 IST, news radar 12:30 IST, and tomorrow preview 20:00 IST; Telegram commands use the webhook. Weekly learning still runs in GitHub Actions on Sunday 07:30 IST until Cloudflare parity is verified.")
     tg("\n".join(L))
     if miss or bad: sys.exit(1)   # red run in GitHub = you get an email
 
