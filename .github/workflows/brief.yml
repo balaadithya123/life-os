@@ -1,6 +1,6 @@
 name: morning-brief
 on:
-  schedule: [{cron: "30 1 * * *"}]   # 07:00 IST
+  # Cloudflare Worker now owns the daily brief schedule; keep manual fallback only.
   workflow_dispatch:
 permissions: {contents: write}
 concurrency: {group: life-os-state, cancel-in-progress: false}
