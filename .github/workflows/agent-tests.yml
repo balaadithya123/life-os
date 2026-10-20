@@ -4,6 +4,9 @@ on:
     paths:
       - "src/devwatch.py"
       - "tests/test_devwatch.py"
+      - "src/schedule_intake.py"
+      - "tests/test_schedule_intake.py"
+      - "requirements-dev.txt"
       - ".github/workflows/agent-tests.yml"
   workflow_dispatch:
 permissions:
@@ -17,6 +20,6 @@ jobs:
         with:
           python-version: "3.11"
           cache: pip
-      - run: pip install -r requirements.txt
+      - run: pip install -r requirements-dev.txt
       - name: Run all offline tests
         run: python -m unittest discover -s tests -p 'test_*.py' -v
