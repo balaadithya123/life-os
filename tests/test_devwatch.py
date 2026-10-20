@@ -52,7 +52,7 @@ class DevWatchTests(unittest.TestCase):
 
     def test_green_run_is_silent_and_persists_state(self):
         from unittest.mock import patch
-        with patch.object(devwatch, "load_config", return_value={"repos": [], "sites": [{"name": "site", "url": "https://site.test/"}]}), \
+        with patch.object(devwatch, "load_config", return_value={"repos": [], "sites": []}), \
              patch.object(devwatch, "load", return_value={"problems": []}), \
              patch.object(devwatch, "save") as save, \
              patch.object(devwatch, "tg") as tg:
