@@ -1,0 +1,13 @@
+# Read-only targets for LifeOS DevWatch. No repository writes are performed.
+repos:
+  - name: balaadithya123/life-os
+    scheduled_workflows:
+      - file: .github/workflows/devwatch.yml
+        max_age_hours: 36
+      - file: .github/workflows/weekly.yml
+        max_age_hours: 200
+  - name: balaadithya123/App_1
+
+sites:
+  - name: App_1 production
+    url: https://builderco.vercel.app/
