@@ -46,8 +46,7 @@ Commands: `/today /done /test /mistake /ok /addchapter /status` (send `/help`).
 - `HUB_URL` / `HUB_TOKEN` secrets are optional and untested; the snapshot and inbox route needs neither.
 
 ## Dev engine
-`proposals/devwatch/SPEC.md` describes a nightly check of your GitHub repos (failed runs, open PRs, deploy status).
-It is a spec for an agent to build; it is not active until its files are moved into place.
+DevWatch is active in `src/devwatch.py` and `.github/workflows/devwatch.yml`. It runs nightly at 22:00 IST, checks read-only GitHub CI/status/PR data and configured production URLs, and alerts only on new or changed incidents. Its first live scheduled run is still needed to verify real API access and Telegram delivery.
 
 ## Limits to know
 - Free quotas (GitHub Actions minutes, Gemini, Groq) change. Check current limits. Hourly polling uses roughly 550 min/month.
