@@ -239,7 +239,7 @@ def main(fixture=None):
     # URLs often change between runs for the same incident. Normalize them for
     # alert comparison while keeping the current full URL in the saved state.
     def incident_key(problem):
-        return re.sub(r"https?://\\S+", "<url>", problem).strip().lower()
+        return re.sub(r"https?://\S+", "<url>", problem).strip().lower()
     old_by_key = {incident_key(p): p for p in old}
     current_by_key = {incident_key(p): p for p in current}
     added = sorted(p for key, p in current_by_key.items() if key not in old_by_key)
