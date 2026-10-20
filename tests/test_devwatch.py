@@ -59,6 +59,46 @@ class DevWatchTests(unittest.TestCase):
         tg.assert_not_called()
         save.assert_called_once()
 
+    def test_pagination_collects_more_than_one_page(self):
+        from unittest.mock import patch
+        first = {"workflow_runs": [{"id": i} for i in range(100)]}
+        second = {"workflow_runs": [{"id": 100}]}
+        with patch.object(devwatch, "gh_get", side_effect=[first, second]) as get:
+            rows = devwatch.gh_get_all("/repos/acme/app/actions/runs", {"per_page": 100}, collection="workflow_runs")
+        self.assertEqual(len(rows), 101)
+        self.assertEqual(get.call_count, 2)
+
+    def test_site_soft_404_expected_content(self):
+        fixture = self.fixture_file({"site:https://site.test/": {"status": 200, "body": "generic error page"}})
+        result = devwatch.check_site({"name": "site", "url": "https://site.test/", "expected_text": "App dashboard"}, fixture=fixture)
+        self.assertIn("soft-404", result[0])
+
+    def test_changed_run_url_does_not_repeat_same_incident(self):
+        from unittest.mock import patch
+        old_problem = "acme/app: workflow CI failure (https://github.com/acme/app/actions/runs/1)"
+        new_problem = "acme/app: workflow CI failure (https://github.com/acme/app/actions/runs/2)"
+        with patch.object(devwatch, "load_config", return_value={"repos": [], "sites": []}), \\
+             patch.object(devwatch, "load", return_value={"problems": [old_problem]}), \\
+             patch.object(devwatch, "check_site", return_value=[new_problem]), \\
+             patch.object(devwatch, "save") as save, \\
+             patch.object(devwatch, "tg") as tg:
+            devwatch.main()
+        tg.assert_not_called()
+        self.assertEqual(save.call_count, 1)
+        self.assertEqual(save.call_args.args[1]["problems"], [new_problem])
+
+    def test_state_is_not_saved_if_telegram_alert_fails(self):
+        from unittest.mock import patch
+        problem = "site: HTTP 503 at https://site.test/"
+        with patch.object(devwatch, "load_config", return_value={"repos": [], "sites": []}), \\
+             patch.object(devwatch, "load", return_value={"problems": []}), \\
+             patch.object(devwatch, "check_site", return_value=[problem]), \\
+             patch.object(devwatch, "save") as save, \\
+             patch.object(devwatch, "tg", side_effect=RuntimeError("Telegram down")):
+            with self.assertRaises(RuntimeError):
+                devwatch.main()
+        save.assert_not_called()
+
 
 if __name__ == "__main__":
     unittest.main()
