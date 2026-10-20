@@ -1,8 +1,8 @@
 # life-os
 
-Runs by itself on GitHub Actions (free). After the one-time setup you never open GitHub again:
-you only talk to a Telegram bot, and your AI chats (Claude, ChatGPT, Grok) read and write through the hub.
-No Supabase, no database, no website. Your data is a few small JSON files in `state/`, versioned by git.
+LifeOS is a hybrid automation system: the existing Cloudflare Worker handles Telegram commands and daily brief/radar/evening triggers; GitHub Actions handles weekly learning, nightly DevWatch, and regression tests. AI chats (Claude, ChatGPT, Grok) coordinate substantial work through Handoff Hub.
+
+The Python learning profile and schedule live in `config/` and `state/` in this repo; Worker-agent task/score/mistake records live in the existing Cloudflare KV namespace. Do not disable either runtime until equivalent automations have passed end-to-end verification.
 
 ## One-time setup (about 10 minutes). Do the steps in this order
 1. **Telegram bot.** In Telegram open @BotFather, send `/newbot`, copy the token. Send any message to your new bot,
@@ -21,10 +21,12 @@ That is all. Everything below happens on its own.
 ## What runs, automatically
 | When (IST) | What |
 |---|---|
-| 07:00 daily | Morning brief: today's picks (max 3), countdown, radar items with 👍/👎 buttons |
-| hourly 06-23 | Reads your Telegram commands and any `inbox/` files left by an AI chat, replies |
-| Sunday 07:30 | Weekly learning pass: updates your profile, queues a practice-set request for your weakest chapter |
-| on every push | `selfcheck`: validates config and tells you what is missing |
+| 07:00 daily | Cloudflare Worker: JEE v5 morning brief, today's schedule and radar highlights |
+| 12:30 daily | Cloudflare Worker: compact news radar digest |
+| 20:00 daily | Cloudflare Worker: evening reminder and tomorrow's schedule |
+| Sunday 07:30 | GitHub Actions: weekly learning pass and profile update |
+| 22:00 daily | GitHub Actions: DevWatch checks failed CI, default-branch status, stale PRs, scheduled-run freshness and production uptime; alerts only on new/changed incidents |
+| on relevant pushes | GitHub Actions: selfcheck and offline agent regression tests |
 
 Commands: `/today /done /test /mistake /ok /addchapter /status` (send `/help`).
 
