@@ -1,24 +1,5 @@
-# proposals/devwatch (inert)
+# DevWatch proposal archive
 
-Files here are the finished dev engine from SPEC.md.
-Owner moves them into place:
+This directory preserves the original DevWatch proposal and fixture from the planning stage. The active implementation now lives at `src/devwatch.py`, with configuration in `config/repos.yml`, schedule in `.github/workflows/devwatch.yml`, tests in `tests/test_devwatch.py`, and architecture notes in `docs/AGENT_ARCHITECTURE.md`.
 
-- `src/devwatch.py` → repo `src/devwatch.py`
-- `devwatch.yml` → `.github/workflows/devwatch.yml`
-- `repos.yml` → `config/repos.yml`
-- Optional: wire fixture into `tests/run_dry.sh`
-
-## Dry-run
-
-```bash
-export DRY_RUN=1
-export DEVWATCH_FIXTURE=proposals/devwatch/fixture.json
-python proposals/devwatch/src/devwatch.py
-# or after move: python src/devwatch.py
-```
-
-Code is untested against live GitHub (no GH_PAT in this agent run). Fixture path exercises the three report paths (failed run, bad HEAD status, old PR).
-
-## Required secret after activation
-
-`GH_PAT` — fine-grained PAT, read-only: Actions, Contents, Pull requests, Commit statuses. Scope to the repos listed in `repos.yml`.
+Do not copy the proposal files over the active implementation. The nightly workflow is scheduled for 22:00 IST; live API/Telegram verification remains pending until its first scheduled run.
