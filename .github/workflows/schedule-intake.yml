@@ -28,54 +28,7 @@ jobs:
       - name: Generate proposal only
         run: |
           if [[ "${{ github.event_name }}" == "push" ]]; then
-            PDF=$(git diff --name-only "${{ github.event.before }}" "${{ github.sha }}" | grep -E '^inbox/schedules/[^/]+\.pdf
-        env:
-          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
-          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-        run: |
-          python - <<'PY'
-          import json, os, urllib.request
-          p = json.load(open("state/schedule_proposal.json", encoding="utf-8"))
-          msg = (
-              "LIFEOS SCHEDULE PROPOSAL — approval required\n"
-              f"Source: {p['source_file']}\n"
-              f"Daily changes: {len(p['daily_changes'])}; test rows: {len(p['test_changes'])}; "
-              f"rule conflicts: {len(p['conflicts'])}; warnings: {len(p['warnings'])}\n"
-              "Nothing was applied to config/plan.yml or config/tests.yml.\n"
-              "Review state/schedule_proposal.md and state/schedule_proposal.json. "
-              "Reply with explicit approval of the exact changes before applying them."
-          )
-          token, chat = os.getenv("TELEGRAM_TOKEN"), os.getenv("TELEGRAM_CHAT_ID")
-          if not token or not chat:
-              raise SystemExit("Telegram secrets are missing; refusing to mark the proposal delivered.")
-          body = json.dumps({"chat_id": chat, "text": msg, "disable_web_page_preview": True}).encode()
-          req = urllib.request.Request(
-              f"https://api.telegram.org/bot{token}/sendMessage", data=body,
-              headers={"Content-Type": "application/json"}, method="POST"
-          )
-          with urllib.request.urlopen(req, timeout=15) as response:
-              payload = json.loads(response.read().decode())
-          if not payload.get("ok"):
-              raise SystemExit("Telegram rejected the schedule proposal notification.")
-          PY
-      - name: Persist proposal and notification state without changing authoritative config
-        if: steps.dedupe.outputs.should_notify == 'true'
-        run: |
-          git config user.name life-os-bot
-          git config user.email bot@users.noreply.github.com
-          python - <<'PY'
-          import json
-          from datetime import datetime, timezone
-          p = json.load(open("state/schedule_proposal.json", encoding="utf-8"))
-          state = {"last_notified_sha256": p["source_sha256"], "source_file": p["source_file"],
-                   "notified_at_utc": datetime.now(timezone.utc).replace(microsecond=0).isoformat()}
-          with open("state/schedule_intake_state.json", "w", encoding="utf-8") as f:
-              json.dump(state, f, indent=2)
-              f.write("\\n")
-          PY
-          git add state/schedule_proposal.md state/schedule_proposal.json state/schedule_intake_state.json
-          git diff --cached --quiet || (git commit -m "schedule intake proposal $(date -u +%F-%H%M)" && git pull --rebase && git push)
- | tail -n 1 || true)
+            PDF=$(git diff --name-only "${{ github.event.before }}" "${{ github.sha }}" | grep -E '^inbox/schedules/[^/]+[.]pdf$' | tail -n 1 || true)
             if [[ -n "$PDF" ]]; then
               python src/schedule_intake.py --file "$PDF"
             else
@@ -94,7 +47,7 @@ jobs:
           state = json.load(open(state_path, encoding="utf-8")) if os.path.exists(state_path) else {}
           should_notify = state.get("last_notified_sha256") != p["source_sha256"]
           with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as out:
-              out.write("should_notify=" + ("true" if should_notify else "false") + "\\n")
+              out.write("should_notify=" + ("true" if should_notify else "false") + "\n")
           print("New PDF digest; notification required." if should_notify else "Same PDF already notified; skipping duplicate Telegram message.")
           PY
       - name: Send approval request to Telegram
@@ -128,9 +81,20 @@ jobs:
           if not payload.get("ok"):
               raise SystemExit("Telegram rejected the schedule proposal notification.")
           PY
-      - name: Persist proposal files without changing authoritative config
+      - name: Persist proposal and notification state
+        if: steps.dedupe.outputs.should_notify == 'true'
         run: |
           git config user.name life-os-bot
           git config user.email bot@users.noreply.github.com
-          git add state/schedule_proposal.md state/schedule_proposal.json
+          python - <<'PY'
+          import json
+          from datetime import datetime, timezone
+          p = json.load(open("state/schedule_proposal.json", encoding="utf-8"))
+          state = {"last_notified_sha256": p["source_sha256"], "source_file": p["source_file"],
+                   "notified_at_utc": datetime.now(timezone.utc).replace(microsecond=0).isoformat()}
+          with open("state/schedule_intake_state.json", "w", encoding="utf-8") as f:
+              json.dump(state, f, indent=2)
+              f.write("\n")
+          PY
+          git add state/schedule_proposal.md state/schedule_proposal.json state/schedule_intake_state.json
           git diff --cached --quiet || (git commit -m "schedule intake proposal $(date -u +%F-%H%M)" && git pull --rebase && git push)
