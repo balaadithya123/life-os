@@ -52,7 +52,7 @@ class DevWatchTests(unittest.TestCase):
 
     def test_green_run_is_silent_and_persists_state(self):
         from unittest.mock import patch
-        with patch.object(devwatch, "load_config", return_value={"repos": [], "sites": []}), \
+        with patch.object(devwatch, "load_config", return_value={"repos": [], "sites": [{"name": "site", "url": "https://site.test/"}]}), \
              patch.object(devwatch, "load", return_value={"problems": []}), \
              patch.object(devwatch, "save") as save, \
              patch.object(devwatch, "tg") as tg:
@@ -95,7 +95,7 @@ class DevWatchTests(unittest.TestCase):
         old_problem = "acme/app: workflow CI failure (https://github.com/acme/app/actions/runs/1)"
         new_problem = "acme/app: workflow CI failure (https://github.com/acme/app/actions/runs/2)"
         with ExitStack() as stack:
-            stack.enter_context(patch.object(devwatch, "load_config", return_value={"repos": [], "sites": []}))
+            stack.enter_context(patch.object(devwatch, "load_config", return_value={"repos": [], "sites": [{"name": "site", "url": "https://site.test/"}]}))
             stack.enter_context(patch.object(devwatch, "load", return_value={"problems": [old_problem]}))
             stack.enter_context(patch.object(devwatch, "check_site", return_value=[new_problem]))
             save = stack.enter_context(patch.object(devwatch, "save"))
@@ -110,7 +110,7 @@ class DevWatchTests(unittest.TestCase):
         from unittest.mock import patch
         problem = "site: HTTP 503 at https://site.test/"
         with ExitStack() as stack:
-            stack.enter_context(patch.object(devwatch, "load_config", return_value={"repos": [], "sites": []}))
+            stack.enter_context(patch.object(devwatch, "load_config", return_value={"repos": [], "sites": [{"name": "site", "url": "https://site.test/"}]}))
             stack.enter_context(patch.object(devwatch, "load", return_value={"problems": []}))
             stack.enter_context(patch.object(devwatch, "check_site", return_value=[problem]))
             save = stack.enter_context(patch.object(devwatch, "save"))
