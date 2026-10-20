@@ -21,7 +21,8 @@ class ScheduleIntakeTests(unittest.TestCase):
         self.assertEqual(daily, [])
         self.assertEqual(events, [])
         self.assertEqual(len(warnings), 1)
-        self.assertEqual(rows, [])
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]["text"], "Important announcement")
     def test_no_qpt_on_aits_main_sunday(self):
         tests = {"tests": [{"name":"AITS Full Test","date":date(2026,11,29),"kind":"aits-main"}]}
         events = [{"name":"QPT 6","date":"2026-11-29","kind":"qpt","source_line":1}]
