@@ -33,10 +33,12 @@ jobs:
         # A failing unrelated test must not silence the scheduled read-only health check.
         continue-on-error: ${{ github.event_name == 'schedule' }}
         run: python -m pytest -q
+      - name: Prepare project packs
+        run: python src/project_pipeline.py intake
       - name: Monitor registered production URLs
         run: python src/project_monitor.py
-      - name: Prepare project packs and trend report
-        run: python src/project_pipeline.py all
+      - name: Refresh trend report
+        run: python src/project_pipeline.py review
       - name: Notify only changed active incidents
         run: python src/project_pipeline.py notify
         env:
