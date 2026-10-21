@@ -43,6 +43,10 @@ jobs:
           DRY_RUN: ${{ github.event_name == 'push' && '1' || '0' }}
       - name: Save generated lifecycle state
         run: |
+          if [[ "$GITHUB_REF" != "refs/heads/main" ]]; then
+            echo "Feature branch: validate outputs but do not commit runtime state into the PR."
+            exit 0
+          fi
           mkdir -p state/projects
           git config user.name life-os-bot
           git config user.email bot@users.noreply.github.com
