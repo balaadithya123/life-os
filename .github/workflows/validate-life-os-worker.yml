@@ -35,6 +35,10 @@ jobs:
         run: python -m pip install -r requirements-dev.txt
       - name: Run repository regression tests
         run: python -m pytest -q
+      - name: Smoke-test Phase C report generation
+        run: |
+          python src/phase_c_metrics.py
+          test -s state/phase_c_optimisation.md
       - name: Parse all GitHub Actions workflow YAML
         run: |
           python - <<'PY'
