@@ -105,7 +105,12 @@ def process_intakes(inbox=PROJECT_INBOX, output=PROJECT_STATE):
         raw=read_json(path)
         if not isinstance(raw,dict): raise ValueError(f"{path.name}: expected a JSON object")
         raw["_source_file"]=path.name
-        target=output/slugify(raw.get("id") or raw.get("name", ""))\n        existing=target/"project.json"\n        if existing.exists():\n            try: raw["created_at"]=read_json(existing).get("created_at")\n            except ValueError: pass\n        p=validate_project(raw); tasks=build_tasks()
+        target=output/slugify(raw.get("id") or raw.get("name", ""))
+        existing=target/"project.json"
+        if existing.exists():
+            try: raw["created_at"]=read_json(existing).get("created_at")
+            except ValueError: pass
+        p=validate_project(raw); tasks=build_tasks()
         write_json(target/"project.json",p); write_json(target/"tasks.json",tasks)
         target.mkdir(parents=True,exist_ok=True)
         (target/"BUILD_BRIEF.md").write_text(render_brief(p,tasks),encoding="utf-8")
