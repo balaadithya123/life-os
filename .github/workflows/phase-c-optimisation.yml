@@ -1,5 +1,17 @@
 name: Phase C optimisation report
 on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/phase-c-optimisation.yml"
+      - "src/phase_c_metrics.py"
+      - "src/project_monitor.py"
+      - "tests/test_phase_c_metrics.py"
+      - "tests/test_project_monitor.py"
+      - "inbox/feedback/**"
+      - "inbox/observations/**"
+      - "state/observations/**"
+      - "state/deployments/**"
   schedule:
     - cron: "0 3 * * 1" # Monday 08:30 IST
   workflow_dispatch:
