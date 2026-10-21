@@ -1,0 +1,72 @@
+[
+  {
+    "id": "research",
+    "title": "Research alternatives and user complaints",
+    "stage": "research",
+    "status": "ready",
+    "requires_user_action": false
+  },
+  {
+    "id": "spec",
+    "title": "Write product specification and acceptance criteria",
+    "stage": "planning",
+    "status": "ready",
+    "requires_user_action": false
+  },
+  {
+    "id": "architecture",
+    "title": "Choose architecture, data model, integrations and deployment target",
+    "stage": "planning",
+    "status": "ready",
+    "requires_user_action": false
+  },
+  {
+    "id": "ux",
+    "title": "Prepare user flows, screen list and build prompts",
+    "stage": "design",
+    "status": "ready",
+    "requires_user_action": false
+  },
+  {
+    "id": "readiness",
+    "title": "Check repository, environment, permissions and test strategy",
+    "stage": "readiness",
+    "status": "ready",
+    "requires_user_action": false
+  },
+  {
+    "id": "manual_build",
+    "title": "Build the application in the selected tool",
+    "stage": "manual",
+    "status": "ready",
+    "requires_user_action": true
+  },
+  {
+    "id": "verification",
+    "title": "Run acceptance checks and fix launch-blocking issues",
+    "stage": "verification",
+    "status": "blocked_by_manual_build",
+    "requires_user_action": false
+  },
+  {
+    "id": "manual_publish",
+    "title": "Publish the app and register its production URL",
+    "stage": "manual",
+    "status": "blocked_by_manual_build",
+    "requires_user_action": true
+  },
+  {
+    "id": "monitoring",
+    "title": "Enable uptime, deployment and feedback monitoring",
+    "stage": "post-release",
+    "status": "blocked_by_manual_publish",
+    "requires_user_action": false
+  },
+  {
+    "id": "improve",
+    "title": "Review trends and prioritise tested improvements",
+    "stage": "post-release",
+    "status": "blocked_by_manual_publish",
+    "requires_user_action": false
+  }
+]
