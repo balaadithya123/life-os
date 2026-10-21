@@ -53,7 +53,8 @@ class PhaseCMetricsTests(unittest.TestCase):
         ]
         report = metrics.build_report([], [], deployments, now=self.now)
         self.assertIn("1/2 (50.0%)", report)
-        self.assertIn("no timestamped deployment records", report.lower() if "no timestamped deployment records" in report.lower() else "timestamped deployment records")
+        self.assertIn("Recorded deployment failure rate", report)
+        self.assertNotIn("Deployment failure rate unavailable", report)
 
     def test_old_and_future_samples_are_excluded(self):
         observations = [
