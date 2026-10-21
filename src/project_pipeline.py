@@ -99,6 +99,7 @@ LifeOS prepares plans and coordinates checks. The owner executes the actual buil
 
 def process_intakes(inbox=PROJECT_INBOX, output=PROJECT_STATE):
     done=[]
+    output.mkdir(parents=True, exist_ok=True)
     if not inbox.exists(): return done
     for path in sorted(inbox.glob("*.json")):
         raw=read_json(path)

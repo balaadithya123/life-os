@@ -33,6 +33,7 @@ jobs:
         run: python src/project_pipeline.py all
       - name: Save generated lifecycle state
         run: |
+          mkdir -p state/projects
           git config user.name life-os-bot
           git config user.email bot@users.noreply.github.com
           git add state/projects state/optimisation_report.md
