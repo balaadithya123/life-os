@@ -178,8 +178,8 @@ def read_events(directory, kind):
     return out
 
 def redact_personal_data(value):
-    value = re.sub(r"[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,}", "[redacted-email]", str(value), flags=re.I)
-    return re.sub(r"(?<!\\w)(?:\\+?\\d[\\d ()-]{7,}\\d)(?!\\w)", "[redacted-phone]", value)
+    value = re.sub(r"[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}", "[redacted-email]", str(value), flags=re.I)
+    return re.sub(r"(?<!\w)(?:\+?\d[\d ()-]{7,}\d)(?!\w)", "[redacted-phone]", value)
 
 def severity(e):
     return {"critical":5,"high":4,"medium":3,"normal":3,"low":2,"info":1}.get(str(e.get("severity","medium")).lower(),3)
