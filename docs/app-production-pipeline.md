@@ -36,11 +36,13 @@ Automate the work around app building and publishing while keeping manual build-
 - Open draft PRs only after validation passes; never auto-merge.
 - Add a regression test from every accepted bug fix where practical.
 
-### Phase C — production feedback and optimisation
-- Keep daily uptime and deployment monitoring.
-- Add supported analytics/performance inputs only after an explicit provider integration is configured.
-- Track incident recurrence, recovery time, failed deploy rate, and repeated user feedback.
-- Produce a weekly evidence-linked optimisation queue; owner approval required for feature or production changes.
+### Phase C — production feedback and optimisation (this change)
+- `src/project_monitor.py` now stores timestamped healthy as well as failed HTTP health samples; incident notifications still filter out healthy samples.
+- `.github/workflows/phase-c-optimisation.yml` runs the regression suite and generates `state/phase_c_optimisation.md` weekly or on manual dispatch.
+- `src/phase_c_metrics.py` calculates a sampled health-check success rate, repeated incident signals, observed failure-to-next-healthy sample intervals, timestamped feedback themes, and deployment failure rate only when records exist.
+- Missing/untimestamped data is explicitly reported as unavailable. The sampled health rate is not presented as contractual uptime, and sample intervals are not presented as exact incident duration.
+- The report produces an evidence-linked optimisation queue. It does not make source changes, and owner approval remains required for feature or production changes.
+- Performance and product analytics remain unavailable until a provider or data source is explicitly configured.
 
 ## Required safeguards
 
