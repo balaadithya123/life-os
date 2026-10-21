@@ -1,0 +1,59 @@
+name: Agentic repair proposal
+on:
+  workflow_dispatch:
+    inputs:
+      issue_number:
+        description: "Issue number describing the bug"
+        required: true
+        type: number
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+jobs:
+  propose-fix:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: pip install -r requirements-dev.txt
+      - name: Generate constrained patch
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          ISSUE_NUMBER: ${{ inputs.issue_number }}
+        run: python scripts/propose_repair.py
+      - name: Validate candidate
+        id: validate
+        continue-on-error: true
+        run: |
+          git diff --check
+          python -m pytest -q
+      - name: Open draft PR only if tests pass
+        if: steps.validate.outcome == 'success'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ inputs.issue_number }}
+        run: |
+          branch="agent/repair-issue-$ISSUE_NUMBER"
+          git config user.name life-os-agent
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$branch"
+          git add -A
+          git diff --cached --quiet && { echo "No patch generated"; exit 1; }
+          git commit -m "Propose tested repair for issue #$ISSUE_NUMBER"
+          git push origin "$branch"
+          gh pr create --repo "$GITHUB_REPOSITORY" --base main --head "$branch" --draft --title "Draft automated repair for #$ISSUE_NUMBER" --body "AI-generated candidate; tests passed in this run. Human review is mandatory. Not auto-merged or deployed."
+      - name: Report unsuccessful candidate
+        if: steps.validate.outcome != 'success'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ inputs.issue_number }}
+        run: gh issue comment "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --body "Automated repair candidate failed validation. No PR opened and no production changes made."
