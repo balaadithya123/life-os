@@ -5,6 +5,8 @@ Never writes to monitored application repositories.
 """
 import json
 import os
+import re
+import time
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from urllib.parse import urlparse
@@ -33,21 +35,64 @@ def load_config():
 
 
 def gh_get(path, params=None, fixture=None):
-    """GET a GitHub API path. Fixture keys use path without query parameters."""
+    """GET a GitHub API path with bounded retry for rate-limited responses."""
     fixture_path = fixture or os.getenv("DEVWATCH_FIXTURE")
     if fixture_path:
         data = json.loads(Path(fixture_path).read_text(encoding="utf-8"))
         if path in data:
             return data[path]
         raise KeyError(f"Fixture has no response for {path}")
-    response = requests.get(GH + path, headers=HEADERS, params=params or {}, timeout=TIMEOUT)
-    if response.status_code in (401, 403):
-        raise PermissionError(f"GitHub API returned {response.status_code}; check GH_PAT permissions/rate limit")
-    if response.status_code == 404:
-        raise FileNotFoundError(f"GitHub API returned 404; repository may be private or missing")
-    response.raise_for_status()
-    return response.json()
+    last_response = None
+    for attempt in range(3):
+        response = requests.get(GH + path, headers=HEADERS, params=params or {}, timeout=TIMEOUT)
+        last_response = response
+        if response.status_code == 403 and attempt < 2:
+            retry_after = response.headers.get("Retry-After")
+            remaining = response.headers.get("X-RateLimit-Remaining")
+            reset = response.headers.get("X-RateLimit-Reset")
+            delay = None
+            if retry_after:
+                try: delay = float(retry_after)
+                except ValueError: delay = None
+            elif remaining == "0" and reset:
+                try: delay = max(0, float(reset) - time.time())
+                except ValueError: delay = None
+            if delay is not None:
+                time.sleep(min(5.0, max(0.25, delay)))
+                continue
+        if response.status_code == 401:
+            raise PermissionError("GitHub API returned 401; check token validity")
+        if response.status_code == 403:
+            raise PermissionError("GitHub API returned 403; check GH_PAT permissions or API rate limits")
+        if response.status_code == 404:
+            raise FileNotFoundError("GitHub API returned 404; repository or resource may be private/missing")
+        response.raise_for_status()
+        return response.json()
+    if last_response is not None:
+        last_response.raise_for_status()
+    raise RuntimeError("GitHub API request failed after bounded retries")
 
+
+def gh_get_all(path, params=None, fixture=None, collection=None, max_pages=10):
+    """Fetch paginated API collections; fixtures remain single-response and offline."""
+    fixture_path = fixture or os.getenv("DEVWATCH_FIXTURE")
+    first = gh_get(path, params, fixture)
+    if fixture_path:
+        return first.get(collection, []) if collection and isinstance(first, dict) else first
+    def unpack(payload):
+        return payload.get(collection, []) if collection and isinstance(payload, dict) else payload
+    items = list(unpack(first) or [])
+    page_size = int((params or {}).get("per_page", 100))
+    if len(items) < page_size:
+        return items
+    for page in range(2, max_pages + 1):
+        query = {**(params or {}), "page": page, "per_page": page_size}
+        payload = gh_get(path, query, fixture)
+        page_items = list(unpack(payload) or [])
+        items.extend(page_items)
+        if len(page_items) < page_size:
+            break
+    return items
 
 def _created_at(value):
     if not value:
@@ -69,9 +114,10 @@ def check_repo(repo_cfg, fixture=None, clock=None):
     since = (clock - timedelta(hours=24)).strftime("%Y-%m-%dT%H:%M:%SZ")
 
     try:
-        runs = gh_get(f"/repos/{owner}/{name}/actions/runs",
-                      {"status": "completed", "created": f">={since}", "per_page": 50}, fixture)
-        for run in (runs.get("workflow_runs") or []) if isinstance(runs, dict) else []:
+        runs = gh_get_all(f"/repos/{owner}/{name}/actions/runs",
+                          {"status": "completed", "created": f">={since}", "per_page": 100}, fixture,
+                          collection="workflow_runs")
+        for run in runs:
             if run.get("conclusion") in {"failure", "timed_out", "action_required"}:
                 problems.append(
                     f"{full_name}: workflow {run.get('name', 'unknown')} "
@@ -91,11 +137,21 @@ def check_repo(repo_cfg, fixture=None, clock=None):
             state = status.get("state") if isinstance(status, dict) else None
             if state in {"failure", "error"}:
                 problems.append(f"{full_name}: default branch {default_branch} combined status is {state}")
+            try:
+                checks = gh_get_all(f"/repos/{owner}/{name}/commits/{sha}/check-runs",
+                                    {"filter": "latest", "per_page": 100}, fixture, collection="check_runs")
+                for check in checks:
+                    if check.get("conclusion") in {"failure", "timed_out", "action_required", "cancelled"}:
+                        problems.append(f"{full_name}: check run {check.get('name', 'unknown')} "
+                                        f"{check.get('conclusion')} ({check.get('html_url', 'no check URL')})")
+            except KeyError:
+                # Older fixtures may only cover the combined-status API.
+                pass
     except Exception as exc:
         problems.append(f"{full_name}: default-branch status unavailable ({type(exc).__name__}: {exc})")
 
     try:
-        prs = gh_get(f"/repos/{owner}/{name}/pulls", {"state": "open", "per_page": 50}, fixture)
+        prs = gh_get_all(f"/repos/{owner}/{name}/pulls", {"state": "open", "per_page": 100}, fixture)
         cutoff = clock - timedelta(days=7)
         for pr in prs if isinstance(prs, list) else []:
             created = _created_at(pr.get("created_at"))
@@ -147,15 +203,22 @@ def check_site(site, fixture=None):
         data = json.loads(Path(fixture or os.getenv("DEVWATCH_FIXTURE")).read_text(encoding="utf-8"))
         if key not in data:
             return [f"{name}: no site fixture response"]
-        status = int(data[key].get("status", 0))
+        site_data = data[key]
+        status = int(site_data.get("status", 0))
         if status < 200 or status >= 400:
             return [f"{name}: HTTP {status} at {url}"]
+        expected = site.get("expected_text")
+        if expected and expected not in str(site_data.get("body", "")):
+            return [f"{name}: expected content missing (possible soft-404) at {url}"]
         return []
     try:
         response = requests.get(url, timeout=8, allow_redirects=True,
                                 headers={"User-Agent": "LifeOS-DevWatch/1.0"})
         if response.status_code < 200 or response.status_code >= 400:
             return [f"{name}: HTTP {response.status_code} at {url}"]
+        expected = site.get("expected_text")
+        if expected and expected not in response.text:
+            return [f"{name}: expected content missing (possible soft-404) at {url}"]
         return []
     except requests.RequestException as exc:
         return [f"{name}: request failed ({type(exc).__name__}) at {url}"]
@@ -173,8 +236,14 @@ def main(fixture=None):
     previous = load("dev.json", {})
     old = set(previous.get("problems", []))
     current = set(problems)
-    added = sorted(current - old)
-    recovered = sorted(old - current)
+    # URLs often change between runs for the same incident. Normalize them for
+    # alert comparison while keeping the current full URL in the saved state.
+    def incident_key(problem):
+        return re.sub(r"https?://\S+", "<url>", problem).strip().lower()
+    old_by_key = {incident_key(p): p for p in old}
+    current_by_key = {incident_key(p): p for p in current}
+    added = sorted(p for key, p in current_by_key.items() if key not in old_by_key)
+    recovered = sorted(p for key, p in old_by_key.items() if key not in current_by_key)
     status = {
         "at": now().isoformat(),
         "summary": "green" if not problems else f"{len(problems)} issue(s)",
@@ -182,8 +251,8 @@ def main(fixture=None):
         "new_problems": added,
         "recovered": recovered,
     }
-    save("dev.json", status)
-
+    # Save only after notification succeeds. If Telegram fails, the old state remains
+    # so the next run retries instead of silently losing the alert.
     if added:
         tg("LIFEOS DEVWATCH — new/changed issue(s)\n" + "\n".join(f"• {p}" for p in added))
     elif recovered and not problems:
@@ -192,6 +261,7 @@ def main(fixture=None):
         tg("LIFEOS DEVWATCH — resolved issue(s)\n" + "\n".join(f"• {p}" for p in recovered))
     elif DRY:
         print("[devwatch] no new incidents; current:", status["summary"])
+    save("dev.json", status)
     return status
 
 

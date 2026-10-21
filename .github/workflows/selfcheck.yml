@@ -1,7 +1,7 @@
 name: selfcheck
 on:
   push:
-    paths: ["src/**", "config/**", "requirements.txt", ".github/workflows/**"]
+    paths: ["src/**", "tests/**", "config/**", "requirements.txt", ".github/workflows/**"]
   workflow_dispatch:
 permissions: {contents: read}
 jobs:
