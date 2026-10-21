@@ -24,7 +24,7 @@
     "Never change production state or deploy automatically",
     "Production fixes require explicit owner approval"
   ],
-  "status": "planning",
+  "status": "published",
   "manual_build_required": true,
   "manual_publish_required": true,
   "production_changes_require_approval": true,
