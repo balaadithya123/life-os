@@ -1,0 +1,32 @@
+name: Phase C optimisation report
+on:
+  schedule:
+    - cron: "0 3 * * 1" # Monday 08:30 IST
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: life-os-state
+  cancel-in-progress: false
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: Run regression tests
+        run: python -m pytest -q
+      - name: Generate evidence-based optimisation report
+        run: python src/phase_c_metrics.py
+      - name: Save report on the default branch only
+        if: github.ref == 'refs/heads/main'
+        run: |
+          git config user.name life-os-bot
+          git config user.email bot@users.noreply.github.com
+          git add state/phase_c_optimisation.md
+          git diff --cached --quiet || (git commit -m "Phase C optimisation report $(date -u +%F)" && git pull --rebase --autostash && git push)
