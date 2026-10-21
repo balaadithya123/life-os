@@ -1,0 +1,26 @@
+{
+  "id": "lifeos",
+  "name": "LifeOS",
+  "idea": "Personal Telegram-based study and workflow assistant with scheduled briefs, revision support, and command-based task tracking.",
+  "target_users": "Personal workflow user",
+  "platform": "Cloudflare Worker with Telegram integration",
+  "build_tool": "Cloudflare Workers",
+  "repository": "balaadithya123/life-os",
+  "published_url": "https://life-os.balaadithya74.workers.dev",
+  "features": [
+    "Telegram task and study commands",
+    "Scheduled workflow briefs",
+    "JEE revision schedule support",
+    "Read-only public endpoint monitoring"
+  ],
+  "success_metrics": [
+    "Public endpoint availability",
+    "HTTP response status",
+    "Recurring uptime incidents"
+  ],
+  "constraints": [
+    "Monitoring is read-only and must not submit user data",
+    "Never change production state or deploy automatically",
+    "Production fixes require explicit owner approval"
+  ]
+}
