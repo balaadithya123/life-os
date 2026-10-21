@@ -152,6 +152,9 @@ def report(events, generated_at=None):
 
 def run_review():
     events=read_events(FEEDBACK_INBOX,"feedback")+read_events(OBSERVATION_INBOX,"observation")
+    # Include daily historical production-health snapshots written by project_monitor.py.
+    events += read_events(ROOT/"state/observations","production-monitor")
+    events = [e for e in events if str(e.get("status", "")).lower() not in {"ok", "healthy", "success"}]
     dev=ROOT/"state/dev.json"
     if dev.exists():
         try:

@@ -6,15 +6,17 @@ on:
       - "inbox/feedback/*.json"
       - "inbox/observations/*.json"
       - "src/project_pipeline.py"
+      - "src/project_monitor.py"
+      - "tests/test_project_monitor.py"
       - "tests/test_project_pipeline.py"
       - ".github/workflows/app-lifecycle.yml"
   schedule:
-    - cron: "0 3 * * 1" # Monday 08:30 IST
+    - cron: "30 16 * * *" # Daily 22:00 IST; monitor registered apps and refresh trend report
   workflow_dispatch:
 permissions:
   contents: write
 concurrency:
-  group: life-os-app-lifecycle
+  group: life-os-state
   cancel-in-progress: false
 jobs:
   lifecycle:
@@ -29,6 +31,8 @@ jobs:
       - run: pip install -r requirements-dev.txt
       - name: Run regression tests
         run: python -m pytest -q
+      - name: Monitor registered production URLs
+        run: python src/project_monitor.py
       - name: Prepare project packs and trend report
         run: python src/project_pipeline.py all
       - name: Save generated lifecycle state
