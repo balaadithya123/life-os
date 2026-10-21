@@ -6,6 +6,7 @@ on:
       - "tests/test_devwatch.py"
       - "src/schedule_intake.py"
       - "tests/test_schedule_intake.py"
+      - "agent_office/**"
       - "requirements-dev.txt"
       - ".github/workflows/agent-tests.yml"
   workflow_dispatch:
@@ -21,5 +22,7 @@ jobs:
           python-version: "3.11"
           cache: pip
       - run: pip install -r requirements-dev.txt
-      - name: Run all offline tests
+      - name: Run existing offline tests
         run: python -m unittest discover -s tests -p 'test_*.py' -v
+      - name: Run Agent Office offline tests
+        run: python -m unittest discover -s agent_office/tests -p 'test_*.py' -v
