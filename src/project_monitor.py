@@ -58,13 +58,13 @@ def run():
                            "project_name": project.get("name", path.parent.name),
                            "observed_at": datetime.now(timezone.utc).isoformat(),
                            "source": "LifeOS production URL monitor"})
-            if result.get("status") != "ok":
-                observations.append(result)
+            observations.append(result)
     OBSERVATIONS.mkdir(parents=True, exist_ok=True)
     day = datetime.now(timezone.utc).strftime("%Y-%m-%d")
     output = OBSERVATIONS / f"{day}.json"
     output.write_text(json.dumps(observations, indent=2) + "\n", encoding="utf-8")
-    print(f"Checked registered projects; incidents={len(observations)}; snapshot={output.relative_to(ROOT)}")
+    incidents = sum(1 for item in observations if str(item.get("status", "")).lower() not in {"ok", "healthy", "success"})
+    print(f"Checked registered projects; samples={len(observations)}; incidents={incidents}; snapshot={output.relative_to(ROOT)}")
     return observations
 
 
