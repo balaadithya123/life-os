@@ -35,7 +35,7 @@ def check_url(url):
         return {"status": state, "severity": severity, "category": "production-health",
                 "title": f"Production URL returned HTTP {status}", "http_status": status,
                 "url": url}
-    except requests.RequestException as exc:
+    except (requests.RequestException, socket.gaierror, ValueError, OSError) as exc:
         return {"status": "incident", "severity": "high", "category": "production-health",
                 "title": f"Production URL request failed ({type(exc).__name__})", "url": url}
 
