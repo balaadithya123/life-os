@@ -66,7 +66,7 @@
     "id": "improve",
     "title": "Review trends and prioritise tested improvements",
     "stage": "post-release",
-    "status": "ready",
+    "status": "blocked_by_manual_publish",
     "requires_user_action": false
   }
 ]

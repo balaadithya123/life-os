@@ -40,10 +40,10 @@ Personal Telegram-based study and workflow assistant with scheduled briefs, revi
 3. **Choose architecture, data model, integrations and deployment target** — ready
 4. **Prepare user flows, screen list and build prompts** — ready
 5. **Check repository, environment, permissions and test strategy** — ready
-6. **Build the application in the selected tool** — ready (manual step)
-7. **Run acceptance checks and fix launch-blocking issues** — blocked_by_manual_build
-8. **Publish the app and register its production URL** — blocked_by_manual_build (manual step)
-9. **Enable uptime, deployment and feedback monitoring** — blocked_by_manual_publish
+6. **Build the application in the selected tool** — done (manual step)
+7. **Run acceptance checks and fix launch-blocking issues** — done
+8. **Publish the app and register its production URL** — done (manual step)
+9. **Enable uptime, deployment and feedback monitoring** — ready
 10. **Review trends and prioritise tested improvements** — blocked_by_manual_publish
 
 ## Human-in-the-loop boundary

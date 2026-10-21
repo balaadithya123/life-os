@@ -1,1 +1,11 @@
-[]
+[
+  {
+    "status": "ok",
+    "http_status": 200,
+    "url": "https://life-os.balaadithya74.workers.dev",
+    "project": "lifeos",
+    "project_name": "LifeOS",
+    "observed_at": "2026-10-21T12:19:17.819074+00:00",
+    "source": "LifeOS production URL monitor"
+  }
+]

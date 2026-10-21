@@ -1,6 +1,6 @@
 # LifeOS app optimisation report
 
-Generated: 2026-10-21T01:52:54.773736+00:00
+Generated: 2026-10-21T12:19:17.886946+00:00
 Evidence items analysed: 9
 
 Heuristic triage only. Reproduce bugs before changing production.
