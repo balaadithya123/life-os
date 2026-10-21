@@ -30,7 +30,7 @@ jobs:
         with:
           python-version: "3.11"
           cache: pip
-      - run: pip install -r requirements.txt
+      - run: pip install -r requirements-dev.txt
       - name: Run regression tests
         run: python -m pytest -q
       - name: Generate evidence-based optimisation report
