@@ -1,5 +1,5 @@
 """Human-in-the-loop app lifecycle pipeline: intake packs and evidence-based trend reports."""
-import argparse, json, re
+import argparse, hashlib, json, os, re
 from collections import defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
@@ -150,9 +150,9 @@ def report(events, generated_at=None):
     lines += ["## Safe execution policy","","- Automated: collect, group, rank and recommend based on supplied evidence.","- Before merging: run tests, review diffs and verify acceptance criteria.","- Approval required for production deployments, destructive actions, permissions and secret changes.","- This report only reflects evidence available to this run; analytics are not implied unless connected.",""]
     return "\n".join(lines)
 
-def run_review():
+def collect_events():
     events=read_events(FEEDBACK_INBOX,"feedback")+read_events(OBSERVATION_INBOX,"observation")
-    # Include daily historical production-health snapshots written by project_monitor.py.
+    # Daily historical production-health snapshots support recurrence analysis.
     events += read_events(ROOT/"state/observations","production-monitor")
     events = [e for e in events if str(e.get("status", "")).lower() not in {"ok", "healthy", "success"}]
     dev=ROOT/"state/dev.json"
@@ -160,14 +160,66 @@ def run_review():
         try:
             for problem in read_json(dev).get("problems",[]): events.append({"category":"deployment-health","title":str(problem),"severity":"high","source":"state/dev.json"})
         except ValueError: events.append({"category":"monitoring-data","title":"Could not parse state/dev.json","severity":"medium"})
+    return events
+
+def run_review():
+    events=collect_events()
     REPORT_PATH.parent.mkdir(parents=True,exist_ok=True)
     text=report(events); REPORT_PATH.write_text(text,encoding="utf-8"); return text
 
+def notify_digest():
+    # Notify only when the CURRENT incident set changes; don't send a nightly duplicate.
+    if os.getenv("DRY_RUN") == "1":
+        print("Dry run: Telegram digest suppressed.")
+        return
+    token, chat = os.getenv("TELEGRAM_TOKEN"), os.getenv("TELEGRAM_CHAT_ID")
+    if not token or not chat:
+        print("Telegram credentials unavailable; digest not sent or marked delivered.")
+        return
+    events=collect_events()
+    latest_files=sorted((ROOT/"state/observations").glob("*.json")) if (ROOT/"state/observations").exists() else []
+    current=[]
+    if latest_files:
+        current=read_events(ROOT/"state/observations","production-monitor")
+        # Only current-day monitor findings participate in incident notifications.
+        latest_name=latest_files[-1].name
+        current=[e for e in current if e.get("source_file")==latest_name]
+    dev=ROOT/"state/dev.json"
+    if dev.exists():
+        try:
+            current += [{"category":"deployment-health","title":str(x),"severity":"high","source":"state/dev.json"} for x in read_json(dev).get("problems",[])]
+        except ValueError:
+            current.append({"category":"monitoring-data","title":"Could not parse state/dev.json","severity":"medium"})
+    current=[e for e in current if str(e.get("status","")).lower() not in {"ok","healthy","success"}]
+    signature_data=sorted((str(e.get("category") or e.get("type") or "incident"),str(e.get("severity") or "medium"),str(e.get("title") or e.get("message") or "")[:240]) for e in current)
+    signature=hashlib.sha256(json.dumps(signature_data,ensure_ascii=False).encode()).hexdigest()
+    state_path=ROOT/"state/optimisation_digest.json"
+    previous=read_json(state_path) if state_path.exists() else {}
+    if signature==previous.get("signature"):
+        print("Incident set unchanged; Telegram notification suppressed.")
+        return
+    from common import tg
+    if current:
+        lines=["LifeOS production-monitor update",f"Active incidents: {len(current)}",""]
+        for item in current[:8]:
+            lines.append(f"[{str(item.get('severity','medium')).upper()}] {item.get('project_name') or item.get('category') or 'App'}: {item.get('title') or item.get('message') or 'Incident detected'}")
+        if len(current)>8: lines.append(f"+ {len(current)-8} additional incident(s). See state/optimisation_report.md.")
+        lines.append("\nNo production changes were made. Investigate, test and approve fixes before release.")
+    elif previous.get("had_incidents"):
+        lines=["LifeOS production-monitor recovery","Previously reported active incidents are no longer present in the latest checks."]
+    else:
+        print("No active incidents; no Telegram notification needed.")
+        write_json(state_path,{"signature":signature,"had_incidents":False})
+        return
+    tg("\n".join(lines))
+    write_json(state_path,{"signature":signature,"had_incidents":bool(current),"updated_at":datetime.now(timezone.utc).isoformat()})
+
 def main():
-    parser=argparse.ArgumentParser(description=__doc__); parser.add_argument("mode",choices=("intake","review","all"),nargs="?",default="all"); mode=parser.parse_args().mode
+    parser=argparse.ArgumentParser(description=__doc__); parser.add_argument("mode",choices=("intake","review","notify","all"),nargs="?",default="all"); mode=parser.parse_args().mode
     if mode in {"intake","all"}:
         rows=process_intakes(); print("\n".join(rows) if rows else "No project intake JSON files found.")
     if mode in {"review","all"}: print(run_review())
+    if mode in {"notify","all"}: notify_digest()
     return 0
 
 if __name__=="__main__": raise SystemExit(main())
