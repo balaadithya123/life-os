@@ -163,7 +163,13 @@ def collect_events():
     dev=ROOT/"state/dev.json"
     if dev.exists():
         try:
-            for problem in read_json(dev).get("problems",[]): events.append({"category":"deployment-health","title":str(problem),"severity":"high","source":"state/dev.json"})
+            for problem in read_json(dev).get("problems",[]):
+                text=str(problem).lower()
+                if "pr #" in text or "pull request" in text or "pull-request" in text: category="repository-maintenance"
+                elif "http " in text or "site" in text or "uptime" in text or "production url" in text: category="site-health"
+                elif "workflow" in text or "check run" in text or "status is" in text: category="ci-health"
+                else: category="devwatch"
+                events.append({"category":category,"title":str(problem),"severity":"high","source":"state/dev.json"})
         except ValueError: events.append({"category":"monitoring-data","title":"Could not parse state/dev.json","severity":"medium"})
     return events
 
@@ -184,7 +190,6 @@ def notify_digest():
     if not token or not chat:
         print("Telegram credentials unavailable; digest not sent or marked delivered.")
         return
-    events=collect_events()
     latest_files=sorted((ROOT/"state/observations").glob("*.json")) if (ROOT/"state/observations").exists() else []
     current=[]
     if latest_files:
@@ -192,12 +197,6 @@ def notify_digest():
         # Only current-day monitor findings participate in incident notifications.
         latest_name=latest_files[-1].name
         current=[e for e in current if e.get("source_file")==latest_name]
-    dev=ROOT/"state/dev.json"
-    if dev.exists():
-        try:
-            current += [{"category":"deployment-health","title":str(x),"severity":"high","source":"state/dev.json"} for x in read_json(dev).get("problems",[])]
-        except ValueError:
-            current.append({"category":"monitoring-data","title":"Could not parse state/dev.json","severity":"medium"})
     current=[e for e in current if str(e.get("status","")).lower() not in {"ok","healthy","success"}]
     signature_data=sorted((str(e.get("category") or e.get("type") or "incident"),str(e.get("severity") or "medium"),str(e.get("title") or e.get("message") or "")[:240]) for e in current)
     signature=hashlib.sha256(json.dumps(signature_data,ensure_ascii=False).encode()).hexdigest()
