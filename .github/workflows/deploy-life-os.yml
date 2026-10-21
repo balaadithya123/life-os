@@ -1,0 +1,37 @@
+name: Deploy LifeOS Worker
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm_deploy:
+        description: "Type deploy to publish the reviewed Worker"
+        required: true
+        type: choice
+        options:
+          - deploy
+
+permissions:
+  contents: read
+
+concurrency:
+  group: life-os-production-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    if: inputs.confirm_deploy == 'deploy'
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Verify Worker syntax
+        run: node --check worker/index.js
+      - name: Deploy to Cloudflare
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: "2379c1fa395a5ae8a9f9474d1df6df41"
+          command: deploy
