@@ -1,8 +1,9 @@
 """Human-in-the-loop app lifecycle pipeline: intake packs and evidence-based trend reports."""
-import argparse, hashlib, json, os, re
+import argparse, hashlib, ipaddress, json, os, re
 from collections import defaultdict
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
+from urllib.parse import urlparse
 
 ROOT = Path(__file__).resolve().parents[1]
 PROJECT_INBOX = ROOT / "inbox/projects"
@@ -25,6 +26,28 @@ def write_json(path, value):
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(value, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
+def validate_public_url(value):
+    value = str(value or "").strip()
+    if not value: return ""
+    parsed = urlparse(value)
+    if parsed.scheme not in {"http", "https"} or not parsed.hostname or parsed.username or parsed.password:
+        raise ValueError("published_url must be a public http(s) URL")
+    host = parsed.hostname.rstrip(".").lower()
+    if host in {"localhost", "localhost.localdomain"} or "." not in host:
+        raise ValueError("published_url must use a public hostname")
+    try:
+        address = ipaddress.ip_address(host.strip("[]"))
+        if not address.is_global: raise ValueError("published_url must not target a private or reserved IP")
+    except ValueError as exc:
+        if "private or reserved" in str(exc): raise
+    return value
+
+def validate_repository(value):
+    value = str(value or "").strip()
+    if value and not re.fullmatch(r"[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+", value):
+        raise ValueError("repository must be in owner/name format")
+    return value
+
 def validate_project(raw):
     if not isinstance(raw, dict): raise ValueError("Project intake must be a JSON object")
     name, idea = str(raw.get("name", "")).strip(), str(raw.get("idea", "")).strip()
@@ -36,8 +59,8 @@ def validate_project(raw):
         "target_users": str(raw.get("target_users", "Not specified")),
         "platform": str(raw.get("platform", "Web app / PWA (confirm during planning)")),
         "build_tool": str(raw.get("build_tool", "Not selected")),
-        "repository": str(raw.get("repository", "")).strip(),
-        "published_url": str(raw.get("published_url", "")).strip(),
+        "repository": validate_repository(raw.get("repository", "")),
+        "published_url": validate_public_url(raw.get("published_url", "")),
         "features": [str(x) for x in raw.get("features", [])],
         "success_metrics": [str(x) for x in raw.get("success_metrics", [])],
         "constraints": [str(x) for x in raw.get("constraints", [])],
@@ -98,34 +121,65 @@ LifeOS prepares plans and coordinates checks. The owner executes the actual buil
 """
 
 def process_intakes(inbox=PROJECT_INBOX, output=PROJECT_STATE):
-    done=[]
+    done=[]; errors=[]
     output.mkdir(parents=True, exist_ok=True)
     if not inbox.exists(): return done
+    seen=set()
     for path in sorted(inbox.glob("*.json")):
-        raw=read_json(path)
-        if not isinstance(raw,dict): raise ValueError(f"{path.name}: expected a JSON object")
-        raw["_source_file"]=path.name
-        target=output/slugify(raw.get("id") or raw.get("name", ""))
-        existing=target/"project.json"
-        if existing.exists():
-            try: raw["created_at"]=read_json(existing).get("created_at")
-            except ValueError: pass
-        p=validate_project(raw); tasks=build_tasks()
-        write_json(target/"project.json",p); write_json(target/"tasks.json",tasks)
-        target.mkdir(parents=True,exist_ok=True)
-        (target/"BUILD_BRIEF.md").write_text(render_brief(p,tasks),encoding="utf-8")
-        done.append(f"{p['name']} -> {target}")
+        try:
+            raw=read_json(path)
+            if not isinstance(raw,dict): raise ValueError("expected a JSON object")
+            raw["_source_file"]=path.name
+            project_id=slugify(raw.get("id") or raw.get("name", ""))
+            if project_id in seen: raise ValueError(f"duplicate project id: {project_id}")
+            seen.add(project_id)
+            target=output/project_id; existing=target/"project.json"; old={}; old_tasks=[]
+            if existing.exists():
+                old=read_json(existing)
+                task_path=target/"tasks.json"
+                if task_path.exists(): old_tasks=read_json(task_path)
+            raw["created_at"]=old.get("created_at") or raw.get("created_at")
+            for key in ("status","repository","published_url","build_tool"):
+                if old.get(key) and not str(raw.get(key,"")).strip(): raw[key]=old[key]
+            project=validate_project(raw)
+            if old.get("status"): project["status"]=old["status"]
+            tasks=build_tasks()
+            old_by_id={t.get("id"):t for t in old_tasks if isinstance(t,dict)}
+            completed={key for key,t in old_by_id.items() if t.get("status")=="done"}
+            sequence=["manual_build","verification","manual_publish","monitoring","improve"]
+            for task in tasks:
+                previous=old_by_id.get(task["id"],{})
+                if task["id"] in completed: task["status"]="done"
+                elif task["id"] in sequence:
+                    idx=sequence.index(task["id"])
+                    if idx and sequence[idx-1] not in completed:
+                        task["status"]="blocked_by_manual_publish" if task["id"] in {"monitoring","improve"} else "blocked_by_manual_build"
+                    else: task["status"]=previous.get("status","ready")
+            target.mkdir(parents=True,exist_ok=True)
+            write_json(target/"project.json",project); write_json(target/"tasks.json",tasks)
+            (target/"BUILD_BRIEF.md").write_text(render_brief(project,tasks),encoding="utf-8")
+            done.append(f"{project['name']} -> {target}")
+        except (ValueError, OSError, TypeError) as exc:
+            errors.append(f"{path.name}: {exc}")
+    if errors: print("Intake warnings (other projects continued):\n" + "\n".join(errors))
     return done
 
 def read_events(directory, kind):
     out=[]
     if not directory.exists(): return out
     for path in sorted(directory.glob("*.json")):
-        raw=read_json(path); batch=raw if isinstance(raw,list) else [raw]
-        for item in batch:
-            if isinstance(item,dict):
-                row=dict(item); row.setdefault("kind",kind); row.setdefault("source_file",path.name); out.append(row)
+        try:
+            raw=read_json(path); batch=raw if isinstance(raw,list) else [raw]
+            for item in batch:
+                if isinstance(item,dict):
+                    row=dict(item); row.setdefault("kind",kind); row.setdefault("source_file",path.name); out.append(row)
+        except (ValueError, OSError, TypeError) as exc:
+            print(f"Evidence warning ({path.name}): {exc}")
     return out
+
+def redact_personal_data(value):
+    value = re.sub(r"[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}", "[redacted-email]", str(value), flags=re.I)
+    return re.sub(r"(?<!\w)(?:\+?\d[\d ()-]{7,}\d)(?!\w)", "[redacted-phone]", value)
 
 def severity(e):
     return {"critical":5,"high":4,"medium":3,"normal":3,"low":2,"info":1}.get(str(e.get("severity","medium")).lower(),3)
@@ -148,7 +202,7 @@ def report(events, generated_at=None):
         lines.append(f"{i}. **[{level}] {cat}** — {len(items)} evidence item(s)")
         lines.append("   - Next step: investigate and reproduce; prepare a branch and regression test before proposing a fix.")
         for e in items[:3]:
-            label=str(e.get("title") or e.get("description") or e.get("message") or "Untitled observation")
+            label=redact_personal_data(e.get("title") or e.get("description") or e.get("message") or "Untitled observation")
             lines.append(f"   - Evidence: {label[:200]} (source: {str(e.get('source') or e.get('source_file') or 'unspecified')[:100]})")
         if len(items)>3: lines.append(f"   - {len(items)-3} additional related item(s) grouped.")
         lines.append("")
@@ -158,7 +212,18 @@ def report(events, generated_at=None):
 def collect_events():
     events=read_events(FEEDBACK_INBOX,"feedback")+read_events(OBSERVATION_INBOX,"observation")
     # Daily historical production-health snapshots support recurrence analysis.
-    events += read_events(ROOT/"state/observations","production-monitor")
+    snapshots = read_events(ROOT/"state/observations","production-monitor")
+    cutoff = datetime.now(timezone.utc) - timedelta(days=30)
+    recent=[]
+    for event in snapshots:
+        stamp=str(event.get("observed_at",""))
+        try:
+            parsed=datetime.fromisoformat(stamp.replace("Z","+00:00"))
+            if parsed.tzinfo is None: parsed=parsed.replace(tzinfo=timezone.utc)
+            if parsed >= cutoff: recent.append(event)
+        except ValueError:
+            if event.get("source_file","") >= cutoff.strftime("%Y-%m-%d"): recent.append(event)
+    events += recent
     events = [e for e in events if str(e.get("status", "")).lower() not in {"ok", "healthy", "success"}]
     dev=ROOT/"state/dev.json"
     if dev.exists():

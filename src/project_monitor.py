@@ -1,5 +1,5 @@
 """Read-only production URL checks for registered LifeOS projects."""
-import json
+import ipaddress, json, socket
 from datetime import datetime, timezone
 from pathlib import Path
 from urllib.parse import urlparse
@@ -15,11 +15,16 @@ HEADERS = {"User-Agent": "LifeOS-ProjectMonitor/1.0", "Accept": "text/html,appli
 
 def check_url(url):
     parsed = urlparse(str(url))
-    if parsed.scheme not in {"http", "https"} or not parsed.netloc:
+    if parsed.scheme not in {"http", "https"} or not parsed.hostname or parsed.username or parsed.password:
         return {"status": "error", "severity": "high", "category": "production-health",
                 "title": "Invalid production URL configuration", "url": str(url)[:200]}
     try:
-        response = requests.get(url, timeout=TIMEOUT, headers=HEADERS, allow_redirects=True)
+        host = parsed.hostname.rstrip(".").lower()
+        addresses = {item[4][0] for item in socket.getaddrinfo(host, parsed.port or (443 if parsed.scheme == "https" else 80), type=socket.SOCK_STREAM)}
+        if not addresses or any(not ipaddress.ip_address(address).is_global for address in addresses):
+            return {"status": "error", "severity": "high", "category": "production-health",
+                    "title": "Production URL resolves to a private or reserved address", "url": str(url)[:200]}
+        response = requests.get(url, timeout=TIMEOUT, headers=HEADERS, allow_redirects=False)
         status = int(response.status_code)
         if status >= 500:
             severity, state = "high", "incident"
@@ -29,8 +34,8 @@ def check_url(url):
             return {"status": "ok", "http_status": status, "url": url}
         return {"status": state, "severity": severity, "category": "production-health",
                 "title": f"Production URL returned HTTP {status}", "http_status": status,
-                "url": url, "final_url": str(response.url)[:300]}
-    except requests.RequestException as exc:
+                "url": url}
+    except (requests.RequestException, socket.gaierror, ValueError, OSError) as exc:
         return {"status": "incident", "severity": "high", "category": "production-health",
                 "title": f"Production URL request failed ({type(exc).__name__})", "url": url}
 
