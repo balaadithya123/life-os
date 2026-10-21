@@ -174,3 +174,4 @@ export default {
   return new Response("life-os",{status:200});
  }
 };
+// LifeOS Agents Telegram adapter is deployed via the Wrangler workflow.
