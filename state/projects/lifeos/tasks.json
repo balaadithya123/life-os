@@ -38,35 +38,35 @@
     "id": "manual_build",
     "title": "Build the application in the selected tool",
     "stage": "manual",
-    "status": "ready",
+    "status": "done",
     "requires_user_action": true
   },
   {
     "id": "verification",
     "title": "Run acceptance checks and fix launch-blocking issues",
     "stage": "verification",
-    "status": "blocked_by_manual_build",
+    "status": "done",
     "requires_user_action": false
   },
   {
     "id": "manual_publish",
     "title": "Publish the app and register its production URL",
     "stage": "manual",
-    "status": "blocked_by_manual_build",
+    "status": "done",
     "requires_user_action": true
   },
   {
     "id": "monitoring",
     "title": "Enable uptime, deployment and feedback monitoring",
     "stage": "post-release",
-    "status": "blocked_by_manual_publish",
+    "status": "ready",
     "requires_user_action": false
   },
   {
     "id": "improve",
     "title": "Review trends and prioritise tested improvements",
     "stage": "post-release",
-    "status": "blocked_by_manual_publish",
+    "status": "ready",
     "requires_user_action": false
   }
 ]
