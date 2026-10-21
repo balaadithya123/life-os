@@ -1,0 +1,17 @@
+name = "life-os"
+main = "worker/index.js"
+compatibility_date = "2026-10-19"
+workers_dev = true
+
+[[kv_namespaces]]
+binding = "KV"
+id = "33146feb048a419eaf7d9a284c802b75"
+
+[vars]
+TZ = "Asia/Kolkata"
+OWNER_NAME = "Balaadithya"
+GEMINI_MODEL = "gemini-2.5-flash"
+XAI_MODEL = "grok-4.3"
+
+[triggers]
+crons = ["30 1 * * *", "0 7 * * *", "30 14 * * *"]
