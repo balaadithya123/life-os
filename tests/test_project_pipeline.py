@@ -17,10 +17,13 @@ class PipelineTests(unittest.TestCase):
             self.assertTrue(project["manual_build_required"]); self.assertTrue(project["manual_publish_required"])
             self.assertTrue(any(t["id"]=="manual_build" and t["requires_user_action"] for t in tasks))
             self.assertIn("Acceptance criteria",(folder/"BUILD_BRIEF.md").read_text())
-    def test_bad_json_fails_closed(self):
+    def test_bad_json_is_isolated_from_valid_intake(self):
         with tempfile.TemporaryDirectory() as d:
-            path=pathlib.Path(d); (path/"bad.json").write_text("{bad")
-            with self.assertRaisesRegex(ValueError,"Invalid JSON"): p.process_intakes(path,path/"out")
+            path=pathlib.Path(d); path.mkdir(exist_ok=True)
+            (path/"bad.json").write_text("{bad")
+            (path/"good.json").write_text(json.dumps({"name":"Good Project","idea":"Continue despite malformed neighbor"}))
+            self.assertEqual(len(p.process_intakes(path,path/"out")),1)
+            self.assertTrue((path/"out"/"good-project"/"project.json").exists())
     def test_intake_preserves_completed_progress(self):
         with tempfile.TemporaryDirectory() as d:
             root=pathlib.Path(d); inbox=root/"inbox"; out=root/"state"; inbox.mkdir()
