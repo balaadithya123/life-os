@@ -168,6 +168,9 @@ def run_review():
     text=report(events); REPORT_PATH.write_text(text,encoding="utf-8"); return text
 
 def notify_digest():
+    # Ensure the workflow's tracked state path exists even when sending is suppressed.
+    state_path=ROOT/"state/optimisation_digest.json"
+    if not state_path.exists(): write_json(state_path,{})
     # Notify only when the CURRENT incident set changes; don't send a nightly duplicate.
     if os.getenv("DRY_RUN") == "1":
         print("Dry run: Telegram digest suppressed.")
@@ -193,7 +196,6 @@ def notify_digest():
     current=[e for e in current if str(e.get("status","")).lower() not in {"ok","healthy","success"}]
     signature_data=sorted((str(e.get("category") or e.get("type") or "incident"),str(e.get("severity") or "medium"),str(e.get("title") or e.get("message") or "")[:240]) for e in current)
     signature=hashlib.sha256(json.dumps(signature_data,ensure_ascii=False).encode()).hexdigest()
-    state_path=ROOT/"state/optimisation_digest.json"
     previous=read_json(state_path) if state_path.exists() else {}
     if signature==previous.get("signature"):
         print("Incident set unchanged; Telegram notification suppressed.")
