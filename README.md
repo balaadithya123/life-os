@@ -30,6 +30,12 @@ That is all. Everything below happens on its own.
 
 Commands: `/today /done /test /mistake /ok /addchapter /status` (send `/help`).
 
+### LifeOS Agents (Cloudflare)
+- The separate `lifeos-agents` Worker provides Planner, Study, Radar, and Build planning roles.
+- Telegram commands: `/agents` lists roles; `/agentstatus` checks the authenticated connection; `/agent planner <task>`, `/agent study <task>`, `/agent radar <task>`, or `/agent build <task>` runs a planning request.
+- The `life-os` Worker uses `LIFEOS_AGENTS_API_KEY`; the agent Worker uses `AGENT_API_KEY`. These must be the same private secret. `LIFEOS_AGENTS_URL` is optional; the adapter defaults to the deployed agent Worker URL.
+- Keep both secrets private and rotate them together. Agent calls are planning-only and cannot execute shell commands, edit repositories, send messages, or deploy software.
+
 ## How it personalises and learns
 - Each `/mistake` (concept, silly, time) raises that chapter's weakness and brings its next review sooner.
 - `/ok` lowers weakness and spaces reviews further out. Untouched chapters drift back toward neutral.
