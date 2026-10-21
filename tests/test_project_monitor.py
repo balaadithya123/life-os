@@ -1,4 +1,4 @@
-import pathlib, sys, unittest
+import json, pathlib, sys, tempfile, unittest
 from unittest.mock import Mock, patch
 ROOT=pathlib.Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/"src"))
@@ -36,5 +36,23 @@ class MonitorTests(unittest.TestCase):
         with patch.object(m.socket,"getaddrinfo",return_value=[(2,1,6,"",("93.184.216.34",443))]), patch.object(m.requests,"get",side_effect=m.requests.Timeout()):
             result=m.check_url("https://app.test/")
         self.assertEqual(result["status"],"incident"); self.assertEqual(result["severity"],"high")
+
+    def test_run_persists_healthy_samples_for_metrics(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = pathlib.Path(temp)
+            project_dir = root / "projects" / "demo"
+            project_dir.mkdir(parents=True)
+            (project_dir / "project.json").write_text(json.dumps({
+                "id": "demo", "name": "Demo", "published_url": "https://app.test/"
+            }), encoding="utf-8")
+            with patch.object(m, "PROJECTS", root / "projects"), \\
+                 patch.object(m, "OBSERVATIONS", root / "observations"), \\
+                 patch.object(m, "check_url", return_value={"status": "ok", "http_status": 200, "url": "https://app.test/"}):
+                m.run()
+            files = list((root / "observations").glob("*.json"))
+            self.assertEqual(len(files), 1)
+            rows = json.loads(files[0].read_text(encoding="utf-8"))
+            self.assertEqual(rows[0]["status"], "ok")
+            self.assertEqual(rows[0]["project"], "demo")
 
 if __name__=="__main__": unittest.main()
