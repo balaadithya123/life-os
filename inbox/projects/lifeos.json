@@ -16,7 +16,8 @@
   "success_metrics": [
     "Public endpoint availability",
     "HTTP response status",
-    "Recurring uptime incidents"
+    "Recurring uptime incidents",
+    "Daily read-only health check for the deployed Worker"
   ],
   "constraints": [
     "Monitoring is read-only and must not submit user data",
