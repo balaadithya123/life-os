@@ -64,7 +64,7 @@ def run():
     output = OBSERVATIONS / f"{day}.json"
     output.write_text(json.dumps(observations, indent=2) + "\n", encoding="utf-8")
     incidents = sum(1 for item in observations if str(item.get("status", "")).lower() not in {"ok", "healthy", "success"})
-    print(f"Checked registered projects; samples={len(observations)}; incidents={incidents}; snapshot={output.relative_to(ROOT)}")
+    print(f"Checked registered projects; samples={len(observations)}; incidents={incidents}; snapshot={output.name}")
     return observations
 
 
