@@ -135,7 +135,7 @@ async function lifeosAgentsRequest(env,path,payload){
  if(payload)init.body=JSON.stringify(payload);
  const r=await fetch(base+path,init);
  const data=await r.json().catch(()=>({}));
- if(!r.ok)throw new Error(String(data.message||data.error||("LifeOS Agents returned HTTP "+r.status)).slice(0,220));
+ if(!r.ok){const u=new URL(r.url);throw new Error(("LifeOS Agents HTTP "+r.status+" at "+u.host+u.pathname+": "+String(data.message||data.error||"upstream request failed")).slice(0,260));}
  return data;
 }
 async function lifeosAgentCommand(env,cmd,arg){
