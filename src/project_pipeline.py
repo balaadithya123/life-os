@@ -161,7 +161,7 @@ def process_intakes(inbox=PROJECT_INBOX, output=PROJECT_STATE):
             done.append(f"{project['name']} -> {target}")
         except (ValueError, OSError, TypeError) as exc:
             errors.append(f"{path.name}: {exc}")
-    if errors: print("Intake warnings (other projects continued):\\n" + "\\n".join(errors))
+    if errors: print("Intake warnings (other projects continued):\n" + "\n".join(errors))
     return done
 
 def read_events(directory, kind):
