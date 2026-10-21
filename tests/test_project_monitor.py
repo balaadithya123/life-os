@@ -11,7 +11,7 @@ class MonitorTests(unittest.TestCase):
             self.assertEqual(m.check_url("https://app.test/")["status"],"ok")
     def test_server_error_is_high_severity(self):
         response=Mock(status_code=503,url="https://app.test/")
-        with patch.object(m.requests,"get",return_value=response):
+        with patch.object(m.socket,"getaddrinfo",return_value=[(2,1,6,"",("93.184.216.34",443))]), patch.object(m.requests,"get",return_value=response):
             result=m.check_url("https://app.test/")
         self.assertEqual(result["severity"],"high"); self.assertEqual(result["http_status"],503)
     def test_client_error_is_medium_severity(self):
