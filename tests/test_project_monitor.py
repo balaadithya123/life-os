@@ -45,9 +45,7 @@ class MonitorTests(unittest.TestCase):
             (project_dir / "project.json").write_text(json.dumps({
                 "id": "demo", "name": "Demo", "published_url": "https://app.test/"
             }), encoding="utf-8")
-            with patch.object(m, "PROJECTS", root / "projects"), \\
-                 patch.object(m, "OBSERVATIONS", root / "observations"), \\
-                 patch.object(m, "check_url", return_value={"status": "ok", "http_status": 200, "url": "https://app.test/"}):
+            with patch.object(m, "PROJECTS", root / "projects"), patch.object(m, "OBSERVATIONS", root / "observations"), patch.object(m, "check_url", return_value={"status": "ok", "http_status": 200, "url": "https://app.test/"}):
                 m.run()
             files = list((root / "observations").glob("*.json"))
             self.assertEqual(len(files), 1)
