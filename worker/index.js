@@ -128,7 +128,7 @@ async function evening(env){const d=addDays(today(env),1);await sendTelegram(env
 // LIFEOS_AGENT_MERGE_20261020: additive commands; existing schedule, webhook, and bindings preserved.
 // Authenticated adapter to the separate Cloudflare LifeOS Agents Worker.
 async function lifeosAgentsRequest(env,path,payload){
- const base=(env.LIFEOS_AGENTS_URL||"https://lifeos-agents.balaadithya74.workers.dev").replace(/\\/+$/,"");
+ const base=(env.LIFEOS_AGENTS_URL||"https://lifeos-agents.balaadithya74.workers.dev").replace(/\/+$/,"");
  const key=env.LIFEOS_AGENTS_API_KEY;
  if(!key)throw new Error("LifeOS Agents is not connected yet. Add LIFEOS_AGENTS_API_KEY as a secret on the life-os Worker.");
  const init={method:payload?"POST":"GET",headers:{authorization:"Bearer "+key,"content-type":"application/json"},signal:AbortSignal.timeout(20000)};
@@ -142,22 +142,22 @@ async function lifeosAgentCommand(env,cmd,arg){
  try{
   if(cmd==="/agents"){
    const data=await lifeosAgentsRequest(env,"/api/agents");
-   return sendTelegram(env,"<b>LifeOS Agents</b>\\n"+data.agents.map(a=>"· <b>"+esc(a.name)+"</b> (<code>"+esc(a.id)+"</code>) — "+esc(a.purpose)).join("\\n"));
+   return sendTelegram(env,"<b>LifeOS Agents</b>\n"+data.agents.map(a=>"· <b>"+esc(a.name)+"</b> (<code>"+esc(a.id)+"</code>) — "+esc(a.purpose)).join("\n"));
   }
   if(cmd==="/agentstatus"){
    const data=await lifeosAgentsRequest(env,"/api/status");
-   return sendTelegram(env,"<b>LifeOS Agents status</b>\\nProvider: "+esc(data.provider)+"\\nModel: "+esc(data.model)+"\\nMode: "+esc(data.mode)+"\\nRoles: "+data.agents.length);
+   return sendTelegram(env,"<b>LifeOS Agents status</b>\nProvider: "+esc(data.provider)+"\nModel: "+esc(data.model)+"\nMode: "+esc(data.mode)+"\nRoles: "+data.agents.length);
   }
   if(cmd==="/agent"){
-   const match=arg.match(/^(planner|study|radar|build)\\s+([\\s\\S]+)$/i);
+   const match=arg.match(/^(planner|study|radar|build)\s+([\s\S]+)$/i);
    if(!match)return sendTelegram(env,"Usage: /agent <planner|study|radar|build> <task>");
    const data=await lifeosAgentsRequest(env,"/api/run",{agent:match[1].toLowerCase(),task:match[2].slice(0,6000),context:"Origin: LifeOS Telegram. Keep recommendations planning-only; do not claim external actions were executed."});
    const output=String(data.output||"No output returned.").slice(0,3200);
-   return sendTelegram(env,"<b>"+esc(data.agent||match[1])+" agent</b>\\n"+esc(output)+"\\n\\n<i>Planning only; no external actions were executed.</i>");
+   return sendTelegram(env,"<b>"+esc(data.agent||match[1])+" agent</b>\n"+esc(output)+"\n\n<i>Planning only; no external actions were executed.</i>");
   }
   return null;
  }catch(error){
-  return sendTelegram(env,"<b>LifeOS Agents error</b>\\n"+esc(String(error.message||error).slice(0,300)));
+  return sendTelegram(env,"<b>LifeOS Agents error</b>\n"+esc(String(error.message||error).slice(0,300)));
  }
 }
 async function laAI(env,prompt){if(!env.GEMINI_API_KEY)throw new Error('Gemini API key is not configured.');const model=env.GEMINI_MODEL||'gemini-2.5-flash';const r=await fetch('https://generativelanguage.googleapis.com/v1beta/models/'+model+':generateContent',{method:'POST',headers:{'content-type':'application/json','x-goog-api-key':env.GEMINI_API_KEY},body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{temperature:0.3,maxOutputTokens:1000}}),signal:AbortSignal.timeout(14000)});const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error('Gemini failed ('+r.status+'): '+String(j.error?.message||'request error').slice(0,120));const out=j.candidates?.[0]?.content?.parts?.map(x=>x.text||'').join('\n').trim();if(!out)throw new Error('Gemini returned no text.');return out.slice(0,3500);}
