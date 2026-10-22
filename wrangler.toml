@@ -8,6 +8,10 @@ workers_dev = true
 binding = "KV"
 id = "33146feb048a419eaf7d9a284c802b75"
 
+[[services]]
+binding = "AGENTS"
+service = "lifeos-agents"
+
 [vars]
 TZ = "Asia/Kolkata"
 OWNER_NAME = "Balaadithya"
