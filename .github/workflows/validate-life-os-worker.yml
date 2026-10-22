@@ -6,6 +6,7 @@ on:
       - "worker/**"
       - "wrangler.toml"
       - "scripts/**"
+      - "test/**"
       - ".github/workflows/**"
   push:
     branches: [main]
@@ -54,6 +55,8 @@ jobs:
           PY
       - name: Check JavaScript syntax
         run: node --check worker/index.js
+      - name: Test LifeOS Agents service-binding client
+        run: node --test test/agents-client.test.mjs
       - name: Validate Worker contract and schedule
         run: node scripts/validate-worker.mjs
       - name: Parse Wrangler configuration
