@@ -1,3 +1,4 @@
+import { lifeosAgentsRequest } from "./agents-client.js";
 const TZ_DEFAULT = "Asia/Kolkata";
 const DAILY = {
   "2026-10-13": ["Physics: Kinematics"],
@@ -127,17 +128,6 @@ async function evening(env){const d=addDays(today(env),1);await sendTelegram(env
 
 // LIFEOS_AGENT_MERGE_20261020: additive commands; existing schedule, webhook, and bindings preserved.
 // Authenticated adapter to the separate Cloudflare LifeOS Agents Worker.
-async function lifeosAgentsRequest(env,path,payload){
- const base=(env.LIFEOS_AGENTS_URL||"https://lifeos-agents.balaadithya74.workers.dev").replace(/\/+$/,"");
- const key=env.LIFEOS_AGENTS_API_KEY;
- if(!key)throw new Error("LifeOS Agents is not connected yet. Add LIFEOS_AGENTS_API_KEY as a secret on the life-os Worker.");
- const init={method:payload?"POST":"GET",headers:{authorization:"Bearer "+key,"content-type":"application/json"},signal:AbortSignal.timeout(20000)};
- if(payload)init.body=JSON.stringify(payload);
- const r=await fetch(base+path,init);
- const data=await r.json().catch(()=>({}));
- if(!r.ok){const u=new URL(r.url);throw new Error(("LifeOS Agents HTTP "+r.status+" at "+u.host+u.pathname+": "+String(data.message||data.error||"upstream request failed")).slice(0,260));}
- return data;
-}
 async function lifeosAgentCommand(env,cmd,arg){
  try{
   if(cmd==="/agents"){
