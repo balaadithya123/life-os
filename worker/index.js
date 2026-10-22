@@ -1,4 +1,4 @@
-import { lifeosAgentsRequest } from "./agents-client.js";
+import { lifeosAgentsRequest, formatAgentTelegramOutput } from "./agents-client.js";
 const TZ_DEFAULT = "Asia/Kolkata";
 const DAILY = {
   "2026-10-13": ["Physics: Kinematics"],
@@ -142,7 +142,7 @@ async function lifeosAgentCommand(env,cmd,arg){
    const match=arg.match(/^(planner|study|radar|build)\s+([\s\S]+)$/i);
    if(!match)return sendTelegram(env,"Usage: /agent <planner|study|radar|build> <task>");
    const data=await lifeosAgentsRequest(env,"/api/run",{agent:match[1].toLowerCase(),task:match[2].slice(0,6000),context:"Origin: LifeOS Telegram. Keep recommendations planning-only; do not claim external actions were executed."});
-   const output=String(data.output||"No output returned.").slice(0,3200);
+   const output=formatAgentTelegramOutput(data,3200);
    return sendTelegram(env,"<b>"+esc(data.agent||match[1])+" agent</b>\n"+esc(output)+"\n\n<i>Planning only; no external actions were executed.</i>");
   }
   return null;
