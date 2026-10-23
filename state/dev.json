@@ -1,34 +1,31 @@
 {
- "at": "2026-10-23T01:44:14.950376+05:30",
- "summary": "9 issue(s)",
+ "at": "2026-10-24T01:30:28.582650+05:30",
+ "summary": "10 issue(s)",
  "problems": [
-  "balaadithya123/App_1: PR #21 open 29d (https://github.com/balaadithya123/App_1/pull/21)",
-  "balaadithya123/App_1: PR #29 open 10d (https://github.com/balaadithya123/App_1/pull/29)",
-  "balaadithya123/App_1: PR #33 open 9d (https://github.com/balaadithya123/App_1/pull/33)",
-  "balaadithya123/App_1: PR #35 open 8d (https://github.com/balaadithya123/App_1/pull/35)",
-  "balaadithya123/App_1: PR #36 open 7d (https://github.com/balaadithya123/App_1/pull/36)",
+  "balaadithya123/App_1: PR #21 open 30d (https://github.com/balaadithya123/App_1/pull/21)",
+  "balaadithya123/App_1: PR #29 open 11d (https://github.com/balaadithya123/App_1/pull/29)",
+  "balaadithya123/App_1: PR #33 open 10d (https://github.com/balaadithya123/App_1/pull/33)",
+  "balaadithya123/App_1: PR #35 open 9d (https://github.com/balaadithya123/App_1/pull/35)",
+  "balaadithya123/App_1: PR #36 open 8d (https://github.com/balaadithya123/App_1/pull/36)",
+  "balaadithya123/App_1: PR #38 open 7d (https://github.com/balaadithya123/App_1/pull/38)",
   "balaadithya123/App_1: check run Build Android Debug APK failure (https://github.com/balaadithya123/App_1/actions/runs/38851692823/job/116814087864)",
   "balaadithya123/App_1: default branch main combined status is failure",
   "balaadithya123/life-os: scheduled workflow .github/workflows/devwatch.yml check unavailable (FileNotFoundError: GitHub API returned 404; repository or resource may be private/missing)",
   "balaadithya123/life-os: scheduled workflow .github/workflows/weekly.yml check unavailable (FileNotFoundError: GitHub API returned 404; repository or resource may be private/missing)"
  ],
  "new_problems": [
+  "balaadithya123/App_1: PR #21 open 30d (https://github.com/balaadithya123/App_1/pull/21)",
+  "balaadithya123/App_1: PR #29 open 11d (https://github.com/balaadithya123/App_1/pull/29)",
+  "balaadithya123/App_1: PR #33 open 10d (https://github.com/balaadithya123/App_1/pull/33)",
+  "balaadithya123/App_1: PR #35 open 9d (https://github.com/balaadithya123/App_1/pull/35)",
+  "balaadithya123/App_1: PR #36 open 8d (https://github.com/balaadithya123/App_1/pull/36)",
+  "balaadithya123/App_1: PR #38 open 7d (https://github.com/balaadithya123/App_1/pull/38)"
+ ],
+ "recovered": [
   "balaadithya123/App_1: PR #21 open 29d (https://github.com/balaadithya123/App_1/pull/21)",
   "balaadithya123/App_1: PR #29 open 10d (https://github.com/balaadithya123/App_1/pull/29)",
   "balaadithya123/App_1: PR #33 open 9d (https://github.com/balaadithya123/App_1/pull/33)",
   "balaadithya123/App_1: PR #35 open 8d (https://github.com/balaadithya123/App_1/pull/35)",
   "balaadithya123/App_1: PR #36 open 7d (https://github.com/balaadithya123/App_1/pull/36)"
- ],
- "recovered": [
-  "balaadithya123/App_1: PR #21 open 28d (https://github.com/balaadithya123/App_1/pull/21)",
-  "balaadithya123/App_1: PR #29 open 9d (https://github.com/balaadithya123/App_1/pull/29)",
-  "balaadithya123/App_1: PR #33 open 8d (https://github.com/balaadithya123/App_1/pull/33)",
-  "balaadithya123/App_1: PR #35 open 7d (https://github.com/balaadithya123/App_1/pull/35)",
-  "balaadithya123/life-os: workflow Deploy LifeOS Worker failure (https://github.com/balaadithya123/life-os/actions/runs/39584224927)",
-  "balaadithya123/life-os: workflow Phase C optimisation report failure (https://github.com/balaadithya123/life-os/actions/runs/39598879398)",
-  "balaadithya123/life-os: workflow Validate LifeOS Worker failure (https://github.com/balaadithya123/life-os/actions/runs/39598120002)",
-  "balaadithya123/life-os: workflow app-lifecycle failure (https://github.com/balaadithya123/life-os/actions/runs/39529573882)",
-  "balaadithya123/life-os: workflow deploy-lifeos-worker failure (https://github.com/balaadithya123/life-os/actions/runs/39610740487)",
-  "balaadithya123/life-os: workflow selfcheck failure (https://github.com/balaadithya123/life-os/actions/runs/39597961855)"
  ]
 }
