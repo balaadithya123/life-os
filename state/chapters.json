@@ -1,84 +1,84 @@
 {
  "Physics: KTG & Thermal": {
   "subject": "Physics",
-  "w": 0.7,
+  "w": 0.69,
   "last": null,
   "interval": 3,
   "n_mistakes": 0
  },
  "Physics: Thermodynamics": {
   "subject": "Physics",
-  "w": 0.7,
+  "w": 0.69,
   "last": null,
   "interval": 3,
   "n_mistakes": 0
  },
  "Physics: Magnetic Effects & Matter": {
   "subject": "Physics",
-  "w": 0.7,
+  "w": 0.69,
   "last": null,
   "interval": 3,
   "n_mistakes": 0
  },
  "Physics: Optics (Wave & Ray)": {
   "subject": "Physics",
-  "w": 0.7,
+  "w": 0.69,
   "last": null,
   "interval": 3,
   "n_mistakes": 0
  },
  "Chemistry: GOC": {
   "subject": "Chemistry",
-  "w": 0.7,
+  "w": 0.69,
   "last": null,
   "interval": 3,
   "n_mistakes": 0
  },
  "Chemistry: Hydrocarbons": {
   "subject": "Chemistry",
-  "w": 0.7,
+  "w": 0.69,
   "last": null,
   "interval": 3,
   "n_mistakes": 0
  },
  "Chemistry: Haloalkanes": {
   "subject": "Chemistry",
-  "w": 0.7,
+  "w": 0.69,
   "last": null,
   "interval": 3,
   "n_mistakes": 0
  },
  "Chemistry: Alcohols, Phenols & Ethers": {
   "subject": "Chemistry",
-  "w": 0.7,
+  "w": 0.69,
   "last": null,
   "interval": 3,
   "n_mistakes": 0
  },
  "Chemistry: Aldehydes & Ketones": {
   "subject": "Chemistry",
-  "w": 0.7,
+  "w": 0.69,
   "last": null,
   "interval": 3,
   "n_mistakes": 0
  },
  "Chemistry: p-Block": {
   "subject": "Chemistry",
-  "w": 0.7,
+  "w": 0.69,
   "last": null,
   "interval": 3,
   "n_mistakes": 0
  },
  "Chemistry: Practical Chemistry": {
   "subject": "Chemistry",
-  "w": 0.7,
+  "w": 0.69,
   "last": null,
   "interval": 3,
   "n_mistakes": 0
  },
  "Maths: Probability": {
   "subject": "Maths",
-  "w": 0.7,
+  "w": 0.69,
   "last": null,
   "interval": 3,
   "n_mistakes": 0
