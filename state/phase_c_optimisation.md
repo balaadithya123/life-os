@@ -1,11 +1,11 @@
 # LifeOS Phase C — production feedback and optimisation
 
-Generated: 2026-10-21T12:22:41.650963+00:00
+Generated: 2026-10-26T08:43:25.629047+00:00
 Window: last 7 days
 
 ## Reliability signals
 
-- **Sampled HTTP health success rate:** 1/1 checks (100.0%). This is a sample-based indicator, not an SLA uptime measurement.
+- **Sampled HTTP health success rate:** 5/5 checks (100.0%). This is a sample-based indicator, not an SLA uptime measurement.
 - **Failed health checks:** 0
 
 ## Recurrence and recovery
