@@ -1,23 +1,39 @@
 {
- "at": "2026-10-28T02:20:19.269988+05:30",
- "summary": "14 issue(s)",
+ "at": "2026-10-29T02:43:54.784495+05:30",
+ "summary": "16 issue(s)",
  "problems": [
-  "balaadithya123/App_1: PR #21 open 34d (https://github.com/balaadithya123/App_1/pull/21)",
-  "balaadithya123/App_1: PR #29 open 15d (https://github.com/balaadithya123/App_1/pull/29)",
-  "balaadithya123/App_1: PR #33 open 14d (https://github.com/balaadithya123/App_1/pull/33)",
-  "balaadithya123/App_1: PR #35 open 13d (https://github.com/balaadithya123/App_1/pull/35)",
-  "balaadithya123/App_1: PR #36 open 12d (https://github.com/balaadithya123/App_1/pull/36)",
-  "balaadithya123/App_1: PR #38 open 11d (https://github.com/balaadithya123/App_1/pull/38)",
-  "balaadithya123/App_1: PR #40 open 10d (https://github.com/balaadithya123/App_1/pull/40)",
-  "balaadithya123/App_1: PR #41 open 9d (https://github.com/balaadithya123/App_1/pull/41)",
-  "balaadithya123/App_1: PR #42 open 8d (https://github.com/balaadithya123/App_1/pull/42)",
-  "balaadithya123/App_1: PR #43 open 7d (https://github.com/balaadithya123/App_1/pull/43)",
+  "balaadithya123/App_1: PR #21 open 35d (https://github.com/balaadithya123/App_1/pull/21)",
+  "balaadithya123/App_1: PR #29 open 16d (https://github.com/balaadithya123/App_1/pull/29)",
+  "balaadithya123/App_1: PR #33 open 15d (https://github.com/balaadithya123/App_1/pull/33)",
+  "balaadithya123/App_1: PR #35 open 14d (https://github.com/balaadithya123/App_1/pull/35)",
+  "balaadithya123/App_1: PR #36 open 13d (https://github.com/balaadithya123/App_1/pull/36)",
+  "balaadithya123/App_1: PR #38 open 12d (https://github.com/balaadithya123/App_1/pull/38)",
+  "balaadithya123/App_1: PR #40 open 11d (https://github.com/balaadithya123/App_1/pull/40)",
+  "balaadithya123/App_1: PR #41 open 10d (https://github.com/balaadithya123/App_1/pull/41)",
+  "balaadithya123/App_1: PR #42 open 9d (https://github.com/balaadithya123/App_1/pull/42)",
+  "balaadithya123/App_1: PR #43 open 8d (https://github.com/balaadithya123/App_1/pull/43)",
+  "balaadithya123/App_1: PR #44 open 7d (https://github.com/balaadithya123/App_1/pull/44)",
   "balaadithya123/App_1: check run Build Android Debug APK failure (https://github.com/balaadithya123/App_1/actions/runs/38851692823/job/116814087864)",
   "balaadithya123/App_1: default branch main combined status is failure",
+  "balaadithya123/life-os: PR #12 open 7d (https://github.com/balaadithya123/life-os/pull/12)",
   "balaadithya123/life-os: scheduled workflow .github/workflows/devwatch.yml check unavailable (FileNotFoundError: GitHub API returned 404; repository or resource may be private/missing)",
   "balaadithya123/life-os: scheduled workflow .github/workflows/weekly.yml check unavailable (FileNotFoundError: GitHub API returned 404; repository or resource may be private/missing)"
  ],
  "new_problems": [
+  "balaadithya123/App_1: PR #21 open 35d (https://github.com/balaadithya123/App_1/pull/21)",
+  "balaadithya123/App_1: PR #29 open 16d (https://github.com/balaadithya123/App_1/pull/29)",
+  "balaadithya123/App_1: PR #33 open 15d (https://github.com/balaadithya123/App_1/pull/33)",
+  "balaadithya123/App_1: PR #35 open 14d (https://github.com/balaadithya123/App_1/pull/35)",
+  "balaadithya123/App_1: PR #36 open 13d (https://github.com/balaadithya123/App_1/pull/36)",
+  "balaadithya123/App_1: PR #38 open 12d (https://github.com/balaadithya123/App_1/pull/38)",
+  "balaadithya123/App_1: PR #40 open 11d (https://github.com/balaadithya123/App_1/pull/40)",
+  "balaadithya123/App_1: PR #41 open 10d (https://github.com/balaadithya123/App_1/pull/41)",
+  "balaadithya123/App_1: PR #42 open 9d (https://github.com/balaadithya123/App_1/pull/42)",
+  "balaadithya123/App_1: PR #43 open 8d (https://github.com/balaadithya123/App_1/pull/43)",
+  "balaadithya123/App_1: PR #44 open 7d (https://github.com/balaadithya123/App_1/pull/44)",
+  "balaadithya123/life-os: PR #12 open 7d (https://github.com/balaadithya123/life-os/pull/12)"
+ ],
+ "recovered": [
   "balaadithya123/App_1: PR #21 open 34d (https://github.com/balaadithya123/App_1/pull/21)",
   "balaadithya123/App_1: PR #29 open 15d (https://github.com/balaadithya123/App_1/pull/29)",
   "balaadithya123/App_1: PR #33 open 14d (https://github.com/balaadithya123/App_1/pull/33)",
@@ -28,16 +44,5 @@
   "balaadithya123/App_1: PR #41 open 9d (https://github.com/balaadithya123/App_1/pull/41)",
   "balaadithya123/App_1: PR #42 open 8d (https://github.com/balaadithya123/App_1/pull/42)",
   "balaadithya123/App_1: PR #43 open 7d (https://github.com/balaadithya123/App_1/pull/43)"
- ],
- "recovered": [
-  "balaadithya123/App_1: PR #21 open 33d (https://github.com/balaadithya123/App_1/pull/21)",
-  "balaadithya123/App_1: PR #29 open 14d (https://github.com/balaadithya123/App_1/pull/29)",
-  "balaadithya123/App_1: PR #33 open 13d (https://github.com/balaadithya123/App_1/pull/33)",
-  "balaadithya123/App_1: PR #35 open 12d (https://github.com/balaadithya123/App_1/pull/35)",
-  "balaadithya123/App_1: PR #36 open 11d (https://github.com/balaadithya123/App_1/pull/36)",
-  "balaadithya123/App_1: PR #38 open 10d (https://github.com/balaadithya123/App_1/pull/38)",
-  "balaadithya123/App_1: PR #40 open 9d (https://github.com/balaadithya123/App_1/pull/40)",
-  "balaadithya123/App_1: PR #41 open 8d (https://github.com/balaadithya123/App_1/pull/41)",
-  "balaadithya123/App_1: PR #42 open 7d (https://github.com/balaadithya123/App_1/pull/42)"
  ]
 }
