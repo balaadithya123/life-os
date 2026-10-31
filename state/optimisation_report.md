@@ -1,25 +1,25 @@
 # LifeOS app optimisation report
 
-Generated: 2026-10-30T20:58:59.982052+00:00
-Evidence items analysed: 18
+Generated: 2026-10-31T20:11:22.159388+00:00
+Evidence items analysed: 28
 
 Heuristic triage only. Reproduce bugs before changing production.
 
 ## Prioritised trends
 
-1. **[HIGH] repository-maintenance** — 14 evidence item(s)
+1. **[HIGH] repository-maintenance** — 15 evidence item(s)
    - Next step: investigate and reproduce; prepare a branch and regression test before proposing a fix.
-   - Evidence: balaadithya123/App_1: PR #21 open 37d (https://github.com/balaadithya123/App_1/pull/21) (source: state/dev.json)
-   - Evidence: balaadithya123/App_1: PR #29 open 18d (https://github.com/balaadithya123/App_1/pull/29) (source: state/dev.json)
-   - Evidence: balaadithya123/App_1: PR #33 open 17d (https://github.com/balaadithya123/App_1/pull/33) (source: state/dev.json)
-   - 11 additional related item(s) grouped.
+   - Evidence: balaadithya123/App_1: PR #21 open 38d (https://github.com/balaadithya123/App_1/pull/21) (source: state/dev.json)
+   - Evidence: balaadithya123/App_1: PR #29 open 19d (https://github.com/balaadithya123/App_1/pull/29) (source: state/dev.json)
+   - Evidence: balaadithya123/App_1: PR #33 open 18d (https://github.com/balaadithya123/App_1/pull/33) (source: state/dev.json)
+   - 12 additional related item(s) grouped.
 
-2. **[HIGH] ci-health** — 4 evidence item(s)
+2. **[HIGH] ci-health** — 13 evidence item(s)
    - Next step: investigate and reproduce; prepare a branch and regression test before proposing a fix.
    - Evidence: balaadithya123/App_1: check run Build Android Debug APK failure (https://github.com/balaadithya123/App_1/actions/runs/[redacted-phone]/job/[redacted-phone]) (source: state/dev.json)
    - Evidence: balaadithya123/App_1: default branch main combined status is failure (source: state/dev.json)
-   - Evidence: balaadithya123/life-os: scheduled workflow .github/workflows/devwatch.yml check unavailable (FileNotFoundError: GitHub API returned 404; repository or resource may be private/missing) (source: state/dev.json)
-   - 1 additional related item(s) grouped.
+   - Evidence: balaadithya123/App_1: workflow Build Android Debug APK failure (https://github.com/balaadithya123/App_1/actions/runs/[redacted-phone]) (source: state/dev.json)
+   - 10 additional related item(s) grouped.
 
 ## Safe execution policy
 
