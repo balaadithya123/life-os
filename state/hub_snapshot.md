@@ -1,17 +1,17 @@
 # life-os snapshot (auto-generated, do not edit)
-Updated: 2026-10-25 12:54 IST
+Updated: 2026-11-01 14:24 IST
 
 Today (Daily 2026-10-18):
 1. [ ] Chemistry: Thermochemistry
 2. [ ] Physics: NLM
 
 Weakest chapters (0 = strong, 1 = weak):
-- Physics: KTG & Thermal: 0.69 (review every ~3d, 0 mistakes logged)
-- Physics: Thermodynamics: 0.69 (review every ~3d, 0 mistakes logged)
-- Physics: Magnetic Effects & Matter: 0.69 (review every ~3d, 0 mistakes logged)
-- Physics: Optics (Wave & Ray): 0.69 (review every ~3d, 0 mistakes logged)
-- Chemistry: GOC: 0.69 (review every ~3d, 0 mistakes logged)
-- Chemistry: Hydrocarbons: 0.69 (review every ~3d, 0 mistakes logged)
+- Physics: KTG & Thermal: 0.68 (review every ~3d, 0 mistakes logged)
+- Physics: Thermodynamics: 0.68 (review every ~3d, 0 mistakes logged)
+- Physics: Magnetic Effects & Matter: 0.68 (review every ~3d, 0 mistakes logged)
+- Physics: Optics (Wave & Ray): 0.68 (review every ~3d, 0 mistakes logged)
+- Chemistry: GOC: 0.68 (review every ~3d, 0 mistakes logged)
+- Chemistry: Hydrocarbons: 0.68 (review every ~3d, 0 mistakes logged)
 
 Completion rate (learned): 80%
 Mistake mix, last 30 days: {'concept': 0.0, 'time': 0.0, 'silly': 0.0}
