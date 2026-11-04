@@ -1,18 +1,18 @@
 # LifeOS app optimisation report
 
-Generated: 2026-11-03T21:53:39.558506+00:00
-Evidence items analysed: 22
+Generated: 2026-11-04T22:04:50.908776+00:00
+Evidence items analysed: 23
 
 Heuristic triage only. Reproduce bugs before changing production.
 
 ## Prioritised trends
 
-1. **[HIGH] repository-maintenance** — 18 evidence item(s)
+1. **[HIGH] repository-maintenance** — 19 evidence item(s)
    - Next step: investigate and reproduce; prepare a branch and regression test before proposing a fix.
-   - Evidence: balaadithya123/App_1: PR #21 open 41d (https://github.com/balaadithya123/App_1/pull/21) (source: state/dev.json)
-   - Evidence: balaadithya123/App_1: PR #29 open 22d (https://github.com/balaadithya123/App_1/pull/29) (source: state/dev.json)
-   - Evidence: balaadithya123/App_1: PR #33 open 21d (https://github.com/balaadithya123/App_1/pull/33) (source: state/dev.json)
-   - 15 additional related item(s) grouped.
+   - Evidence: balaadithya123/App_1: PR #21 open 42d (https://github.com/balaadithya123/App_1/pull/21) (source: state/dev.json)
+   - Evidence: balaadithya123/App_1: PR #29 open 23d (https://github.com/balaadithya123/App_1/pull/29) (source: state/dev.json)
+   - Evidence: balaadithya123/App_1: PR #33 open 22d (https://github.com/balaadithya123/App_1/pull/33) (source: state/dev.json)
+   - 16 additional related item(s) grouped.
 
 2. **[HIGH] ci-health** — 4 evidence item(s)
    - Next step: investigate and reproduce; prepare a branch and regression test before proposing a fix.
